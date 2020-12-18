@@ -52,7 +52,7 @@ FilterNOT(op)
 #### FilterOR
 #### BoolConst
 ### Category
-### Categoris
+### Categories
 
 
 ## Syntax
