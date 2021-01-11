@@ -3,34 +3,33 @@ from openlostcat.parsers.utils import  is_bool_op, is_bool_op_list, get_as_bool_
 from openlostcat.operators.filter_operators import FilterAND, FilterOR, FilterNOT, AtomicFilter, FilterIMPL
 from openlostcat.operators.bool_operators import BoolAND, BoolOR, BoolNOT, BoolConst, BoolIMPL
 from openlostcat.operators.quantifier_operators import ANY, ALL
+from openlostcat.parsers.refdict import RefDict
 
 
 class OpExpressionParser:
-    
-    
+
     get_ANY_wrapped_list = lambda self, x: get_as_bool_op_list(x, ANY)
     get_ANY_wrapped = lambda self, x: get_as_bool_op(x, ANY)
     
-    def __init__(self, filter_ref_dict = {}, bool_ref_dict = {}):
-        self.bool_ref_dict = bool_ref_dict
-        self.filter_ref_dict = filter_ref_dict
+    def __init__(self, ref_dict = RefDict()):
+        self.ref_dict = ref_dict
     
-    def __lookfor_ref(self, r, dic, error_func):
-        try:
-            ref = dic[r]
-        except KeyError:
-            ref = error_func(r)
-        return ref
-            
-    def __ref_search(self, r):
-        error_func = lambda x: error("The given reference can not be found: ", x)
-        if r.startswith("##"):
-            return self.__lookfor_ref(r, self.bool_ref_dict, error_func)
-        elif r.startswith("#"):
-            return self.__lookfor_ref(r, self.filter_ref_dict, error_func)
-        else:
-            return self.__lookfor_ref("#" + r, self.filter_ref_dict,
-                                      lambda x: self.__lookfor_ref("##" + r, self.bool_ref_dict, error_func))
+    # def __lookfor_ref(self, r, dic, error_func):
+    #     try:
+    #         ref = dic[r]
+    #     except KeyError:
+    #         ref = error_func(r)
+    #     return ref
+    #
+    # def __ref_search(self, r):
+    #     error_func = lambda x: error("The given reference can not be found: ", x)
+    #     if r.startswith("##"):
+    #         return self.__lookfor_ref(r, self.bool_ref_dict, error_func)
+    #     elif r.startswith("#"):
+    #         return self.__lookfor_ref(r, self.filter_ref_dict, error_func)
+    #     else:
+    #         return self.__lookfor_ref("#" + r, self.filter_ref_dict,
+    #                                   lambda x: self.__lookfor_ref("##" + r, self.bool_ref_dict, error_func))
         
     def __create__quantifiers(self, name, value, quantifier):
         element = self.__parse_standalone_operator(value)
@@ -51,8 +50,9 @@ class OpExpressionParser:
             is_bool_op_list, self.get_ANY_wrapped_list)
 #         return FilterAND([self.__get_tuple_elem(t) for t in d.items()])
 
-    def __get_ref(self, r):
-        return self.__ref_search(r)
+    # def __get_ref(self, r):
+    #     return self.ref_dict.get_ref()
+    #     return self.__ref_search(r)
     
     def __get_impl(self, l):
         return choose_operator(
@@ -81,7 +81,8 @@ class OpExpressionParser:
                 error("__NOT must contain a list or dict elements", v)
         if k.startswith("__REF"):
             if isinstance(v, str):
-               return self.__get_ref(v)
+               # return self.__get_ref(v)
+               return self.ref_dict.get_ref(v)
             else:
                error("__REF must contain a string elements", v)   
         if k.startswith("__IMPL"):
@@ -104,7 +105,8 @@ class OpExpressionParser:
         switcher = {
             list: self.__get_or,
             dict: self.__get_and,
-            str: self.__get_ref,
+            # str: self.__get_ref,
+            str: self.ref_dict.get_ref,
             bool: lambda b: BoolConst(b)
         }
         return switcher.get(type(source),
@@ -118,12 +120,4 @@ class OpExpressionParser:
             if isinstance(rules,list) \
             else self.get_ANY_wrapped(self.__parse_standalone_operator(rules))
 
-        # rule_switcher = {
-        #     bool: lambda b: BoolConst(b),
-        #     list: lambda l: BoolOR(self.get_ANY_wrapped_list([self.__parse_standalone_operator(r) for r in l])),
-        #     dict: lambda d: self.get_ANY_wrapped(self.__parse_standalone_operator(d)),
-        #     str: lambda d: self.get_ANY_wrapped(self.__parse_standalone_operator(d))
-        # }
-        # return rule_switcher.get(type(rules),
-        #                         lambda x: error("Unexpected element. Value is not allowed here:", x))(rules)
     
