@@ -3,11 +3,17 @@
 ## Base idea and motivation
 
 
-## Elements (classes)
-### Operators
+## Getting started
+
+## Demo
+
+## Details
+
+### Elements (classes)
+#### Operators
 Basically operators works as filter. Every operator has an apply function which get a list of tags and produces a subset of this list.
 
-#### AtomicFilter
+##### AtomicFilter
 It checks whether a key is presented in the tags list and the value of the tag meets with the desirable values. It returns with the filtered set.
 
 attributes: 
@@ -32,7 +38,7 @@ If null is presented in the list means that the key is not mandatory to be prese
 
 If null is the 
 
-#### FilterNOT
+##### FilterNOT
 FilterNOT can be use as negation. It provides the complementary set of the underlying operator result.
 
 attributes: 
@@ -48,14 +54,14 @@ FilterNOT(op)
 ```
 
 
-#### FilterAND
-#### FilterOR
-#### BoolConst
-### Category
-### Categories
+##### FilterAND
+##### FilterOR
+##### BoolConst
+#### Category
+#### Categories
 
 
-## Syntax
+### Syntax
 The Sytax or categories file. JSON file format is used so it must be a valid JSON file.
 
 Categories ::= Category | [Category, ...]
@@ -84,3 +90,4 @@ SingleValue conversions in AtomicFilter operator:
  - str: str
  - int: string representation of int 
  - null: it means that the key must not be represented in the tag list
+
