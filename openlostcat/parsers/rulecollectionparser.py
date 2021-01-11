@@ -8,9 +8,6 @@ class RuleCollectionParser:
     def __init__(self, parserClass = OpExpressionParser, ref_dict = RefDict()):
         self.ref_dict = ref_dict
         self.parser = parserClass(ref_dict)
-        # self.parser = parserClass()
-        # self.filter_ref_dict = filter_ref_dict
-        # self.bool_ref_dict = bool_ref_dict
 
     @staticmethod
     def __validate(category_rule_collection):
@@ -28,14 +25,6 @@ class RuleCollectionParser:
     @staticmethod
     def __get_categoryRules(category_rule_collection):
         return category_rule_collection["categoryRules"]
-
-    # @staticmethod
-    # def __is_ref(kv):
-    #     return kv[0].startswith("#")
-    #
-    # @staticmethod
-    # def __is_bool_ref(kv):
-    #     return kv[0].startswith("##")
         
     def __parse_category_or_ref(self, source):
         if not isinstance(source, dict):
@@ -43,21 +32,10 @@ class RuleCollectionParser:
         if len(source) > 1:
             error("A category or reference definition must have exactly one key-value pair: ", source)
         kv = next(iter(source.items()))
-        # if self.__is_ref(kv):
-        #     op = self.parserClass(self.filter_ref_dict, self.bool_ref_dict).parse_operator(kv[1])
-        #     if self.__is_bool_ref(kv):
-        #         self.bool_ref_dict[kv[0]] = \
-        #             BoolREF(kv[0], op.wrap_as_bool_op(ANY) if not is_bool_op(op) else op)
-        #     else:
-        #         if is_bool_op(op):
-        #             error("Invalid reference definition. A bool expression is given but a filter expression is expected: ", op)
-        #         self.filter_ref_dict[kv[0]] = FilterREF(kv[0], op)
-        #         return
         if self.ref_dict.is_ref(kv):
             self.ref_dict.set_ref(kv, self.parser)
             return
-        else: 
-            # return Category(kv[0], kv[1], self.parserClass(self.filter_ref_dict, self.bool_ref_dict))
+        else:
             return Category(kv[0], kv[1], self.parser)
 
     def __parse_categories(self, cat):

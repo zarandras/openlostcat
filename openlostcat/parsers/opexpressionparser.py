@@ -13,23 +13,6 @@ class OpExpressionParser:
     
     def __init__(self, ref_dict = RefDict()):
         self.ref_dict = ref_dict
-    
-    # def __lookfor_ref(self, r, dic, error_func):
-    #     try:
-    #         ref = dic[r]
-    #     except KeyError:
-    #         ref = error_func(r)
-    #     return ref
-    #
-    # def __ref_search(self, r):
-    #     error_func = lambda x: error("The given reference can not be found: ", x)
-    #     if r.startswith("##"):
-    #         return self.__lookfor_ref(r, self.bool_ref_dict, error_func)
-    #     elif r.startswith("#"):
-    #         return self.__lookfor_ref(r, self.filter_ref_dict, error_func)
-    #     else:
-    #         return self.__lookfor_ref("#" + r, self.filter_ref_dict,
-    #                                   lambda x: self.__lookfor_ref("##" + r, self.bool_ref_dict, error_func))
         
     def __create__quantifiers(self, name, value, quantifier):
         element = self.__parse_standalone_operator(value)
@@ -48,11 +31,6 @@ class OpExpressionParser:
             [self.__parse_keyvalue_operator(t) for t in d.items()],
             FilterAND, BoolAND,
             is_bool_op_list, self.get_ANY_wrapped_list)
-#         return FilterAND([self.__get_tuple_elem(t) for t in d.items()])
-
-    # def __get_ref(self, r):
-    #     return self.ref_dict.get_ref()
-    #     return self.__ref_search(r)
     
     def __get_impl(self, l):
         return choose_operator(
@@ -105,7 +83,6 @@ class OpExpressionParser:
         switcher = {
             list: self.__get_or,
             dict: self.__get_and,
-            # str: self.__get_ref,
             str: self.ref_dict.get_ref,
             bool: lambda b: BoolConst(b)
         }
