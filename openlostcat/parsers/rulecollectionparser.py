@@ -32,8 +32,9 @@ class RuleCollectionParser:
         if len(source) > 1:
             error("A category or reference definition must have exactly one key-value pair: ", source)
         kv = next(iter(source.items()))
-        if self.ref_dict.is_ref(kv):
-            self.ref_dict.set_ref(kv, self.parser)
+        if self.ref_dict.is_ref(kv[0]):
+            ref_operator = self.parser.parse_operator(kv[1])
+            self.ref_dict.set_ref(kv[0], ref_operator)
             return
         else:
             return Category(kv[0], kv[1], self.parser)

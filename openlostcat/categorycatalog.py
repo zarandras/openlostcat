@@ -3,11 +3,11 @@ from openlostcat.parsers.rulecollectionparser import RuleCollectionParser
 from openlostcat.utils import error, indent, base_indent_num
 
 
-class Categories:
+class CategoryCatalog:
     
     evaluationStrategy = "firstMatching"
     
-    str_template = "Categories:\ncategory rule collection: [\n{categories}\n]"
+    str_template = "CategoryCatalog:\ncategory rule collection: [\n{categories}\n]"
 
     def __update_properties(self, prop):
         if 'evaluationStrategy' in prop:

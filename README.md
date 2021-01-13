@@ -58,13 +58,13 @@ FilterNOT(op)
 ##### FilterOR
 ##### BoolConst
 #### Category
-#### Categories
+#### CategoryCatalog
 
 
 ### Syntax
 The Sytax or categories file. JSON file format is used so it must be a valid JSON file.
 
-Categories ::= Category | [Category, ...]
+CategoryCatalog ::= Category | [Category, ...]
 Category ::= BoolConst | FilterAND (Rule with a restriction to FilterAND) | [Rule, ...]
 BoolConst ::= bool (true | false)
 Rule ::= FilterAND | FilterOR
