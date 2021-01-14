@@ -1,12 +1,16 @@
 from .abstract_bool_operator import AbstractBoolOperator
 from openlostcat.utils import indent, base_indent_num
+# from openlostcat.parsers.utils import  is_bool_op
+from openlostcat.utils import error
 
 class ALL(AbstractBoolOperator):
     
     str_template = "ALL(\n{operator}\n)"
             
-    def __init__(self, name, filter_operator):
-        self.filter_operator = filter_operator
+    def __init__(self, name, operator):
+        if self.is_bool_op(operator):
+            error("ALL is not defined for logical operators", operator)
+        self.filter_operator = operator
         self.name = self.get_name("__ALL", name)
         
              
@@ -22,8 +26,10 @@ class ANY(AbstractBoolOperator):
     
     str_template = "ANY(\n{operator}\n)"
             
-    def __init__(self, name, filter_operator):
-        self.filter_operator = filter_operator
+    def __init__(self, name, operator):
+        if self.is_bool_op(operator):
+            error("ANY is not defined for logical operators", operator)
+        self.filter_operator = operator
         self.name = self.get_name("__ANY", name)
   
     def apply(self, tag_bundle_set):
