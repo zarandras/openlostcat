@@ -64,12 +64,23 @@ class BoolREF(AbstractBoolOperator):
     
     str_template = "REF {name}(\n{operator}\n)"
     
-    def __init__(self, name, bool_operator):
+    def __init__(self, name, bool_operator, with_cache = True):
         self.name = name
         self.bool_operator = bool_operator
+        # cache for an ongoing evaluation where key is the object reference of the tag bundle being categorized
+        # (we assume the tag_bundle_set is not changed, if it is mutable, disable the cache by with_cache = False)
+        self.with_cache     = with_cache
+        self.cached_key     = None
+        self.cached_value   = None
+    
   
     def apply(self, tag_bundle_set): 
-        return self.bool_operator.apply(tag_bundle_set)
+        if self.with_cache and self.cached_key is tag_bundle_set:
+            return self.cached_value
+        else:
+            self.cached_key = tag_bundle_set
+            self.cached_value = self.bool_operator.apply(tag_bundle_set) 
+            return self.cached_value
     
     def __str__(self):
         return self.str_template.format(name= self.name, operator= indent(str(self.bool_operator), base_indent_num))

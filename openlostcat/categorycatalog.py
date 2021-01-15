@@ -3,13 +3,11 @@ from openlostcat.parsers.rulecollectionparser import RuleCollectionParser
 from openlostcat.utils import error, indent, base_indent_num
 
 
-class Categories:
+class CategoryCatalog:
     
     evaluationStrategy = "firstMatching"
-    bool_ref_dict = {}
-    filter_ref_dict = {}
     
-    str_template = "Categories:\ncategory rule collection: [\n{categories}\n]"
+    str_template = "CategoryCatalog:\ncategory rule collection: [\n{categories}\n]"
 
     def __update_properties(self, prop):
         if 'evaluationStrategy' in prop:
@@ -17,14 +15,12 @@ class Categories:
 
     def __init__(self, category_rule_collection, debug = False, parser = RuleCollectionParser()):
         self.debug = debug
-        self.category_rule_collection = category_rule_collection
-        if isinstance(self.category_rule_collection, str):
-            with open(self.category_rule_collection) as f:
-              self.category_rule_collection = json.load(f)
-        self.properties = parser.get_properties(self.category_rule_collection)
+        if isinstance(category_rule_collection, str):
+            with open(category_rule_collection) as f:
+              category_rule_collection = json.load(f)
+        self.properties = parser.get_properties(category_rule_collection)
         self.__update_properties(self.properties)
-        self.parser = parser
-        (self.categories, self.filter_ref_dict, self.bool_ref_dict) = parser.parseFile(self.category_rule_collection)
+        self.categories = parser.parseFile(category_rule_collection)
         
     def get_categories_enumerated_key_map(self):
         return dict(enumerate([c.name for c in self.categories]))
