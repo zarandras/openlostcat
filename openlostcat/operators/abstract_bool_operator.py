@@ -9,6 +9,10 @@ class AbstractBoolOperator(ABC):
     
     def get_name(self, elemname, name):
         return elemname + str(hash(self.filter_operator)) if name in (None, '') or not name.strip() else name
+
+    @staticmethod
+    def is_bool_op(op):
+        return issubclass(type(op), AbstractBoolOperator)
   
     @abstractmethod
     def apply(self, tags): 
