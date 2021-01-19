@@ -1,9 +1,10 @@
 from openlostcat.utils import error
-from openlostcat.parsers.utils import  is_bool_op, is_bool_op_list, get_as_bool_op, get_as_bool_op_list
 from openlostcat.operators.filter_operators import FilterAND, FilterOR, FilterNOT, AtomicFilter, FilterIMPL
 from openlostcat.operators.bool_operators import BoolAND, BoolOR, BoolNOT, BoolConst, BoolIMPL
 from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.parsers.refdict import RefDict
+from openlostcat.operators.abstract_bool_operator import AbstractBoolOperator
+from openlostcat.operators.abstract_filter_operator import AbstractFilterOperator
 import re
 
 
@@ -13,27 +14,30 @@ class OpExpressionParser:
         self.ref_dict = ref_dict
 
     @staticmethod
-    def __parse_list_operator(op, filter_op_class, bool_op_class):
-        return bool_op_class(get_as_bool_op_list(op)) if is_bool_op_list(op) else filter_op_class(op)
+    def __create_multiary_operator(op_list, filter_op_class, bool_op_class):
+        return bool_op_class(AbstractFilterOperator.get_as_bool_op_list(op_list)) if AbstractBoolOperator.is_bool_op_list(op_list) else filter_op_class(op_list)
+
+    op_list_len_check = lambda self, x: len(x) == 1
     
     def __create_or(self, l):
-        return self.__parse_list_operator(
+        return self.__parse_standalone_operator(l[0]) if self.op_list_len_check(l) else  self.__create_multiary_operator(
             [self.__parse_standalone_operator(e) for e in l],
             FilterOR, BoolOR)
 
     def __create_and(self, d):
-        return self.__parse_list_operator(
+        return self.__parse_keyvalue_operator(*next(iter(d.items()))) if self.op_list_len_check(d) else  self.__create_multiary_operator(
             [self.__parse_keyvalue_operator(*t) for t in d.items()],
             FilterAND, BoolAND)
     
     def __create_impl(self, l):
-        return self.__parse_list_operator(
+        return self.__create_multiary_operator(
             [self.__parse_standalone_operator(e) for e in l],
             FilterIMPL, BoolIMPL)
 
     def __create_not(self, source):
-        choose_operator = lambda op, filter_op_class, bool_op_class: bool_op_class(op) if is_bool_op(op) else filter_op_class(op)
-        return choose_operator(self.__parse_standalone_operator(source),
+        create_unary_operator = lambda op, filter_op_class, bool_op_class: bool_op_class(op) \
+            if AbstractBoolOperator.is_bool_op(op) else filter_op_class(op)
+        return create_unary_operator(self.__parse_standalone_operator(source),
                 FilterNOT, BoolNOT)
 
     @staticmethod
@@ -56,12 +60,12 @@ class OpExpressionParser:
             if self.__check_json_type(x, type_list) \
             else error(error_message, x)
         switcher = {
-            "OR": lambda x:  create_and_check(x, self.__create_or, [list], "__OR_ key must contain a list element"),
-            "AND": lambda x:  create_and_check(x, self.__create_and, [dict], "__AND_ key must contain a dict element"),
-            "NOT": lambda x:  create_and_check(x, self.__create_not, [list, dict], "__NOT_ must contain a list or dict elements"),
-            "REF": lambda x:  create_and_check(x, self.ref_dict.get_ref, [str], "__REF_ must contain a string elements"),
+            "OR":   lambda x:  create_and_check(x, self.__create_or, [list], "__OR_ key must contain a list element"),
+            "AND":  lambda x:  create_and_check(x, self.__create_and, [dict], "__AND_ key must contain a dict element"),
+            "NOT":  lambda x:  create_and_check(x, self.__create_not, [list, dict], "__NOT_ must contain a list or dict elements"),
+            "REF":  lambda x:  create_and_check(x, self.ref_dict.get_ref, [str], "__REF_ must contain a string elements"),
             "IMPL": lambda x:  create_and_check(x, self.__create_impl, [list], "__IMPL_ key must contain a list element"),
-            "BOOLCONST": lambda x:  create_and_check(x, BoolConst, [bool], "__BOOLCONST_ key must contain a bool element"),
+            "BOOLCONST": BoolConst,
             "ANY": lambda x:  ANY(k, self.__parse_standalone_operator(x)),
             "ALL": lambda x:  ALL(k, self.__parse_standalone_operator(x))
         }
@@ -85,10 +89,10 @@ class OpExpressionParser:
         if isinstance(rules, list):
             # A category-level list is interpreted as a list of bool level rules
             # (each item forced as a bool op instead of a filter-or)
-            return BoolOR(get_as_bool_op_list([self.__parse_standalone_operator(r) for r in rules]))
+            return BoolOR(AbstractFilterOperator.get_as_bool_op_list([self.__parse_standalone_operator(r) for r in rules]))
         else:
             # Any other json element as category is interpreted as a single bool-level operator
             # (any filter-level ops forced as bool ops by wrapping them into an ANY quantifier)
-            return get_as_bool_op(self.__parse_standalone_operator(rules))
+            return AbstractFilterOperator.get_as_bool_op(self.__parse_standalone_operator(rules))
 
     

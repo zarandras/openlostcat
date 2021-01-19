@@ -1,6 +1,5 @@
 from .abstract_bool_operator import AbstractBoolOperator
 from openlostcat.utils import indent, base_indent_num
-# from openlostcat.parsers.utils import  is_bool_op
 from openlostcat.utils import error
 
 class ALL(AbstractBoolOperator):
@@ -9,7 +8,7 @@ class ALL(AbstractBoolOperator):
             
     def __init__(self, name, operator):
         if self.is_bool_op(operator):
-            error("ALL is not defined for logical operators", operator)
+            error("ALL is not defined for bool operators", operator)
         self.filter_operator = operator
         self.name = self.get_name("__ALL", name)
         
@@ -28,7 +27,7 @@ class ANY(AbstractBoolOperator):
             
     def __init__(self, name, operator):
         if self.is_bool_op(operator):
-            error("ANY is not defined for logical operators", operator)
+            error("ANY is not defined for bool operators", operator)
         self.filter_operator = operator
         self.name = self.get_name("__ANY", name)
   

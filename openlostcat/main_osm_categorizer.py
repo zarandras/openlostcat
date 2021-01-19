@@ -17,6 +17,9 @@ class MainOsmCategorizer:
         def get_categories_enumerated_key_map(self):
             return self.category_cat.get_categories_enumerated_key_map()
 
+        def __str__(self):
+            return str(self.category_cat)
+
 
 
 

@@ -13,6 +13,13 @@ class AbstractBoolOperator(ABC):
     @staticmethod
     def is_bool_op(op):
         return issubclass(type(op), AbstractBoolOperator)
+
+    @staticmethod
+    def is_bool_op_list(l):
+        for op in l:
+            if AbstractBoolOperator.is_bool_op(op):
+                return True
+        return False
   
     @abstractmethod
     def apply(self, tags): 

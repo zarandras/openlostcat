@@ -1,12 +1,18 @@
 from .abstract_filter_operator import AbstractFilterOperator
 from openlostcat.utils import error, indent, base_indent_num
+from openlostcat.operators.quantifier_operators import ANY, ALL
     
 class FilterAND(AbstractFilterOperator):
     
     str_template = "and(\n{operators}\n)"
+
+    @staticmethod
+    def __get_inherits_quantifier(filter_operators):
+        return ALL if all([issubclass(op.wrapper_quantifier, ALL) for op in filter_operators]) else ANY
     
     def __init__(self, filter_operators):
         self.filter_operators = filter_operators
+        self.wrapper_quantifier = self.__get_inherits_quantifier(filter_operators)
   
     def apply(self, tag_bundle_set):
         matching_tag_bundles = tag_bundle_set
@@ -25,9 +31,14 @@ class FilterAND(AbstractFilterOperator):
 class FilterOR(AbstractFilterOperator):
     
     str_template = "or[\n{operators}\n]"
+
+    @staticmethod
+    def __get_inherits_quantifier(filter_operators):
+        return ALL if any([issubclass(op.wrapper_quantifier, ALL) for op in filter_operators]) else ANY
     
     def __init__(self, filter_operators):
         self.filter_operators = filter_operators
+        self.wrapper_quantifier = self.__get_inherits_quantifier(filter_operators)
   
     def apply(self, tag_bundle_set): 
         result = []
@@ -52,6 +63,7 @@ class FilterNOT(AbstractFilterOperator):
     
     def __init__(self, filter_operator):
         self.filter_operator = filter_operator
+        self.wrapper_quantifier = filter_operator.wrapper_quantifier
   
     def apply(self, tag_bundle_set): 
         return self.tag_bundle_set_diff(tag_bundle_set, self.filter_operator.apply(tag_bundle_set))
@@ -67,6 +79,7 @@ class FilterREF(AbstractFilterOperator):
     def __init__(self, name, filter_operator):
         self.name = name
         self.filter_operator = filter_operator
+        self.wrapper_quantifier = filter_operator.wrapper_quantifier
   
     def apply(self, tag_bundle_set): 
         return self.filter_operator.apply(tag_bundle_set)
@@ -84,6 +97,7 @@ class FilterIMPL(AbstractFilterOperator):
             error("Implication must contain at least 2 elements: ", filter_operators)
         self.filter_operators = filter_operators
         self.impl_op = FilterOR([FilterNOT(op) for op in filter_operators[:-1]] + [filter_operators[-1]])
+        self.wrapper_quantifier = ALL
         
   
     def apply(self, tag_bundle_set): 
@@ -125,7 +139,8 @@ class AtomicFilter(AbstractFilterOperator):
         self.values = self.__parse_values(self.raw_value)
         self.is_optional_key = None in self.values
         if self.is_optional_key:
-            self.values = set(filter(None, self.values)) 
+            self.values = set(filter(None, self.values))
+        self.wrapper_quantifier = ANY
         
     def __check_condition(self, tag_bundle):
         return (self.is_optional_key and self.key not in tag_bundle) or (self.key in tag_bundle and tag_bundle[self.key] in self.values)

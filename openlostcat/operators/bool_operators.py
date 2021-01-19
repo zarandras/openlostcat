@@ -90,6 +90,8 @@ class BoolConst(AbstractBoolOperator):
     str_template = "CONST({const})"
   
     def __init__(self, const_val):
+        if not isinstance(const_val, bool):
+            error("__BOOLCONST_ key must contain a bool element", const_val)
         self.const_val = const_val
   
     def apply(self, tag_bundle_set): 
