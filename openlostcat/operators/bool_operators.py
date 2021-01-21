@@ -74,13 +74,11 @@ class BoolREF(AbstractBoolOperator):
         self.cached_value   = None
     
   
-    def apply(self, tag_bundle_set): 
-        if self.with_cache and self.cached_key is tag_bundle_set:
-            return self.cached_value
-        else:
+    def apply(self, tag_bundle_set):
+        if not self.with_cache or self.cached_key is not tag_bundle_set:
             self.cached_key = tag_bundle_set
-            self.cached_value = self.bool_operator.apply(tag_bundle_set) 
-            return self.cached_value
+            self.cached_value = self.bool_operator.apply(tag_bundle_set)
+        return self.cached_value
     
     def __str__(self):
         return self.str_template.format(name= self.name, operator= indent(str(self.bool_operator), base_indent_num))
