@@ -29,25 +29,24 @@ class CategoryCatalog:
         for num, category in enumerate(self.categories):
             (is_matching_category, op_result_meta_info) = category.apply(tag_bundle_set)
             if is_matching_category:
-                return (num, category.name, op_result_meta_info)
-        return (-1, None, [])
+                return (num, category.name, op_result_meta_info) if self.debug else (num, category.name)
+        return (-1, None, []) if self.debug else (-1, None)
         
     def apply_all_evaluation(self, tag_bundle_set):
         categories_list = []
         for num, category in enumerate(self.categories):
             (is_matching_category, op_result_meta_info) = category.apply(tag_bundle_set)
             if is_matching_category:
-                categories_list.append((num, category.name, op_result_meta_info))
-        return categories_list if not categories_list else (-1, None, [])
+                categories_list.append((num, category.name, op_result_meta_info) if self.debug else (num, category.name))
+        return categories_list if categories_list else [(-1, None, []) if self.debug else (-1, None)]
 
     def apply(self, tag_bundle_set):
         evaluation_switcher = {
             "firstMatching" : self.apply_fm_evaluation,
             "all" : self.apply_all_evaluation
         }
-        ret = evaluation_switcher.get(self.evaluationStrategy,
+        return evaluation_switcher.get(self.evaluationStrategy,
                                lambda x: error("Unsupported evaluation strategy: ", self.evaluationStrategy))(tag_bundle_set)
-        return ret if self.debug else ret[:2]
         
 
     def __str__(self):
