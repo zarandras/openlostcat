@@ -1,0 +1,67 @@
+{
+     "type": "CategoryRuleCollection",
+     "categoryRules":[
+         {
+            "##pt_primary_accessible": {
+                "public_transport": "stop_position",
+                "__OR_primary_clause": [
+                    {"light_rail": true},
+                    {"subway": true},
+                    {"train": true}
+                ]
+            }
+         },
+         {
+            "##pt_accessible": [
+                {"public_transport": "stop_position"},
+                {"public_transport": "platform"},
+                {"amenity": "ferry_terminal"}
+            ]
+         },
+         {
+            "##water_nearby": {"waterway": "river"}
+         },
+         {
+            "##park_nearby": {"leisure":"park"}
+         },
+         {
+             "##water_AND_park": {
+                 "__REF_water": "##water_nearby",
+                 "__REF_park": "##park_nearby"
+             }
+         },
+         {
+             "##water_OR_park": [
+                 "##water_nearby",
+                 "##park_nearby"
+             ]
+         },
+         {
+             "1st_preferred_location": {
+                 "__REF_primary_pt": "##pt_primary_accessible",
+                 "__REF_water_AND_park": "##water_AND_park"
+             }
+         },
+         {
+             "2nd_preferred_location": [
+                 {
+                     "__REF_primary_pt": "##pt_primary_accessible",
+                     "__REF_water_OR_park": "##water_OR_park"
+                 },
+                 {
+                     "__REF_secondary_pt": "##pt_accessible",
+                     "__REF_water_AND_park": "##water_AND_park"
+                 }
+             ]
+         },
+         {
+             "3rd_preferred_location": {
+                 "__REF_secondary_pt": "##pt_accessible",
+                 "__REF_water_OR_park": "##water_OR_park"
+             }
+         },
+         {
+             "not_preferred_location": true
+         }
+     ]
+}

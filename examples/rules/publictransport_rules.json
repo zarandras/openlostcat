@@ -1,0 +1,25 @@
+{
+     "type": "CategoryRuleCollection",
+     "categoryRules":[
+        {
+            "pt_primary_accessible": {
+                "public_transport": "stop_position",
+                "__OR_primary_clause": [
+                    {"light_rail": true},
+                    {"subway": true},
+                    {"train": true}
+                ]
+            }
+        },
+        {
+            "pt_accessible": [
+                {"public_transport": "stop_position"},
+                {"public_transport": "platform"},
+                {"amenity": "ferry_terminal"}
+            ]
+        },
+        {
+            "pt_nonaccessible": true
+        }
+     ]
+}

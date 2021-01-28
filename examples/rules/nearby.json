@@ -1,0 +1,14 @@
+{
+     "type": "CategoryRuleCollection",
+     "properties": {
+         "evaluationStrategy": "all"
+     },
+     "categoryRules":[
+        {
+            "water_nearby": {"waterway": "river"}
+        },
+        {
+            "park_nearby": {"leisure":"park"}
+        }
+     ]
+}
