@@ -1,4 +1,5 @@
 from .categorycatalog import CategoryCatalog
+from immutabledict import immutabledict
 
 class MainOsmCategorizer:
 
@@ -11,7 +12,8 @@ class MainOsmCategorizer:
             self.category_cat = CategoryCatalog(category_rule_collection, debug = debug)
 
         def categorize(self, osm_json_dict):
-            tag_bundle_set = [elements['tags'] for elements in osm_json_dict['elements'] if 'tags' in elements]
+            # tag_bundle_set = [elements['tags'] for elements in osm_json_dict['elements'] if 'tags' in elements]
+            tag_bundle_set = {immutabledict(elements['tags']) for elements in osm_json_dict['elements'] if 'tags' in elements}
             return self.category_cat.apply(tag_bundle_set)
         
         def get_categories_enumerated_key_map(self):

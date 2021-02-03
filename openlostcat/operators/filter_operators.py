@@ -45,8 +45,8 @@ class FilterOR(AbstractFilterOperator):
         candidates = tag_bundle_set
         for op in self.filter_operators:
             matching_tag_bundles = op.apply(candidates)
-            candidates = self.tag_bundle_set_diff(candidates, matching_tag_bundles)
-            result += matching_tag_bundles
+            candidates = candidates - matching_tag_bundles
+            result.update(matching_tag_bundles)
             if len(result) == len(tag_bundle_set):
                 return result
         return result
@@ -66,7 +66,7 @@ class FilterNOT(AbstractFilterOperator):
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
   
     def apply(self, tag_bundle_set): 
-        return self.tag_bundle_set_diff(tag_bundle_set, self.filter_operator.apply(tag_bundle_set))
+        return tag_bundle_set - self.filter_operator.apply(tag_bundle_set)
     
     def __str__(self):
         return self.str_template.format(operator= indent(str(self.filter_operator), base_indent_num))
@@ -146,7 +146,7 @@ class AtomicFilter(AbstractFilterOperator):
         return (self.is_optional_key and self.key not in tag_bundle) or (self.key in tag_bundle and tag_bundle[self.key] in self.values)
     
     def apply(self, tag_bundle_set):
-        return [tag_bundle for tag_bundle in tag_bundle_set if self.__check_condition(tag_bundle)]
+        return {tag_bundle for tag_bundle in tag_bundle_set if self.__check_condition(tag_bundle)}
     
     def __str__(self):
         return self.str_template.format(key=self.key, value=self.values, is_optional_key=self.is_optional_key)

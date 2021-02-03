@@ -4,11 +4,6 @@ from openlostcat.operators.abstract_bool_operator import AbstractBoolOperator
 
 class AbstractFilterOperator(ABC):
 
-    @staticmethod
-    def tag_bundle_set_diff(a, b):
-#         return [e for e in a if json.dumps(e, sort_keys=True) not in {json.dumps(d, sort_keys=True) for d in b}]
-        return list(map(dict, set(frozenset(d.items()) for d in a) - set(frozenset(d.items()) for d in b)))
-
     wrapper_quantifier = ANY
     # move it to each filter operator: atomic will default to ANY, IMPL will default to ALL,
     #   NOT and REF inherits,
