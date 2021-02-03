@@ -41,7 +41,7 @@ class FilterOR(AbstractFilterOperator):
         self.wrapper_quantifier = self.__get_inherits_quantifier(filter_operators)
   
     def apply(self, tag_bundle_set): 
-        result = {}
+        result = set()
         candidates = tag_bundle_set
         for op in self.filter_operators:
             matching_tag_bundles = op.apply(candidates)
