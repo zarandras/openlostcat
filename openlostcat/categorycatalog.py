@@ -41,6 +41,11 @@ class CategoryCatalog:
         return categories_list if categories_list else [(-1, None, []) if self.debug else (-1, None)]
 
     def apply(self, tag_bundle_set):
+        """
+        
+        :param tag_bundle_set:
+        :return:
+        """
         evaluation_switcher = {
             "firstMatching" : self.apply_fm_evaluation,
             "all" : self.apply_all_evaluation
