@@ -32,14 +32,14 @@ class AbstractFilterOperator(ABC):
         return op.wrap_as_bool_op() if not AbstractBoolOperator.is_bool_op(op) else op
 
     @staticmethod
-    def get_as_bool_op_list(l, bool_op = ANY):
+    def get_as_bool_op_list(l):
         """
 
         :param l:
         :param bool_op:
         :return:
         """
-        return [AbstractFilterOperator.get_as_bool_op(op, bool_op) for op in l]
+        return [AbstractFilterOperator.get_as_bool_op(op) for op in l]
   
     @abstractmethod
     def apply(self, tag_bundle_set ):
