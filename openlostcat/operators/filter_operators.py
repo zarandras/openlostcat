@@ -3,11 +3,19 @@ from openlostcat.utils import error, indent, base_indent_num
 from openlostcat.operators.quantifier_operators import ANY, ALL
     
 class FilterAND(AbstractFilterOperator):
+    """
+
+    """
     
     str_template = "and(\n{operators}\n)"
 
     @staticmethod
     def __get_inherits_quantifier(filter_operators):
+        """AND will wrap into ALL if each subexprs defaults to ALL otherwise will wrap into ANY
+
+        :param filter_operators:
+        :return:
+        """
         return ALL if all([issubclass(op.wrapper_quantifier, ALL) for op in filter_operators]) else ANY
     
     def __init__(self, filter_operators):
@@ -29,11 +37,19 @@ class FilterAND(AbstractFilterOperator):
                                        base_indent_num))
   
 class FilterOR(AbstractFilterOperator):
+    """
+
+    """
     
     str_template = "or[\n{operators}\n]"
 
     @staticmethod
     def __get_inherits_quantifier(filter_operators):
+        """OR will wrap into ALL if any subexpr defaults to ALL otherwise will wrap into ANY
+
+        :param filter_operators:
+        :return:
+        """
         return ALL if any([issubclass(op.wrapper_quantifier, ALL) for op in filter_operators]) else ANY
     
     def __init__(self, filter_operators):
@@ -58,11 +74,15 @@ class FilterOR(AbstractFilterOperator):
                                        base_indent_num))
   
 class FilterNOT(AbstractFilterOperator):
+    """
+
+    """
     
     str_template = "not(\n{operator}\n)"
     
     def __init__(self, filter_operator):
         self.filter_operator = filter_operator
+        # TODO: NOT inherits
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
   
     def apply(self, tag_bundle_set): 
@@ -73,12 +93,16 @@ class FilterNOT(AbstractFilterOperator):
     
     
 class FilterREF(AbstractFilterOperator):
+    """
+
+    """
     
     str_template = "ref {name}(\n{operator}\n)"
     
     def __init__(self, name, filter_operator):
         self.name = name
         self.filter_operator = filter_operator
+        # TODO: REF inherits
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
   
     def apply(self, tag_bundle_set): 
@@ -87,8 +111,10 @@ class FilterREF(AbstractFilterOperator):
     def __str__(self):
         return self.str_template.format(name= self.name, operator= indent(str(self.filter_operator), base_indent_num))
 
-# implication
 class FilterIMPL(AbstractFilterOperator):
+    """
+
+    """
     
     str_template = "impl(\n{operators}\n)"
     
@@ -97,6 +123,7 @@ class FilterIMPL(AbstractFilterOperator):
             error("Implication must contain at least 2 elements: ", filter_operators)
         self.filter_operators = filter_operators
         self.impl_op = FilterOR([FilterNOT(op) for op in filter_operators[:-1]] + [filter_operators[-1]])
+        # TODO: IMPL will default to ALL
         self.wrapper_quantifier = ALL
         
   
@@ -111,10 +138,18 @@ class FilterIMPL(AbstractFilterOperator):
 
         
 class AtomicFilter(AbstractFilterOperator):
+    """
+
+    """
     
     str_template = "{{{key} : {value}}}, is_optional_key = {is_optional_key}"
     
     def __parse_single_value(self, dat):
+        """
+
+        :param dat:
+        :return:
+        """
         switcher = {
             bool: lambda b: "yes" if b else "no",
             int: lambda i: str(i),
@@ -134,12 +169,18 @@ class AtomicFilter(AbstractFilterOperator):
     
     
     def __init__(self, key, value):
+        """
+
+        :param key:
+        :param value:
+        """
         self.key = key
         self.raw_value = value
         self.values = self.__parse_values(self.raw_value)
         self.is_optional_key = None in self.values
         if self.is_optional_key:
             self.values = set(filter(None, self.values))
+        # TODO: atomic will default to ANY
         self.wrapper_quantifier = ANY
         
     def __check_condition(self, tag_bundle):

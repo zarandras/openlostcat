@@ -9,12 +9,26 @@ import re
 
 
 class OpExpressionParser:
+    """
+
+    """
     
     def __init__(self, ref_dict = RefDict()):
+        """
+
+        :param ref_dict:
+        """
         self.ref_dict = ref_dict
 
     @staticmethod
     def __create_multiary_operator(op_list, filter_op_class, bool_op_class):
+        """
+
+        :param op_list:
+        :param filter_op_class:
+        :param bool_op_class:
+        :return:
+        """
         return bool_op_class(AbstractFilterOperator.get_as_bool_op_list(op_list)) if AbstractBoolOperator.is_bool_op_list(op_list) else filter_op_class(op_list)
 
     op_list_len_check = lambda self, x: len(x) == 1
@@ -42,6 +56,11 @@ class OpExpressionParser:
 
     @staticmethod
     def __get_operator_prefix(key_str):
+        """
+
+        :param key_str:
+        :return:
+        """
         try:
             return re.findall("^__([^_]*)_", key_str)[0]
         except IndexError:
@@ -49,13 +68,21 @@ class OpExpressionParser:
 
     @staticmethod
     def __check_json_type(source, type_list):
+        """
+
+        :param source:
+        :param type_list:
+        :return:
+        """
         return any(isinstance(source, type_candidate) for type_candidate in type_list)
-        # for type_candidate in type_list:
-        #     if isinstance(source, type_candidate):
-        #         return True
-        # return False
 
     def __parse_keyvalue_operator(self, k, v):
+        """
+
+        :param k:
+        :param v:
+        :return:
+        """
         create_and_check =lambda x, create_fv, type_list, error_message : create_fv(x) \
             if self.__check_json_type(x, type_list) \
             else error(error_message, x)
@@ -71,8 +98,12 @@ class OpExpressionParser:
         }
         return switcher.get(self.__get_operator_prefix(k), lambda x:  AtomicFilter(k, x))(v)
 
-    # For JSON items without attribute name (key):
     def __parse_standalone_operator(self, source):
+        """For JSON items without attribute name (key)
+
+        :param source:
+        :return:
+        """
         switcher = {
             list: self.__create_or,
             dict: self.__create_and,
@@ -83,9 +114,19 @@ class OpExpressionParser:
                             lambda x: error("Atomic value is not allowed here: ", x))(source)
     
     def parse_operator(self, source):
+        """
+
+        :param source:
+        :return:
+        """
         return self.__parse_standalone_operator(source)
 
     def parse_category(self, rules):
+        """
+
+        :param rules:
+        :return:
+        """
         if isinstance(rules, list):
             # A category-level list is interpreted as a list of bool level rules
             # (each item forced as a bool op instead of a filter-or)

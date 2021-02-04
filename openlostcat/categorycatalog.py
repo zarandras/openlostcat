@@ -4,8 +4,12 @@ from openlostcat.utils import error, indent, base_indent_num
 
 
 class CategoryCatalog:
+    """
+
+    """
     
     evaluationStrategy = "firstMatching"
+    """evaluationStrategy  """
     
     str_template = "CategoryCatalog:\ncategory rule collection: [\n{categories}\n]"
 
@@ -14,6 +18,12 @@ class CategoryCatalog:
             self.evaluationStrategy = prop['evaluationStrategy']
 
     def __init__(self, category_rule_collection, debug = False, parser = RuleCollectionParser()):
+        """
+
+        :param category_rule_collection:
+        :param debug:
+        :param parser:
+        """
         self.debug = debug
         if isinstance(category_rule_collection, str):
             with open(category_rule_collection) as f:
@@ -23,9 +33,18 @@ class CategoryCatalog:
         self.categories = parser.parseFile(category_rule_collection)
         
     def get_categories_enumerated_key_map(self):
+        """
+
+        :return:
+        """
         return dict(enumerate([c.name for c in self.categories]))
     
     def apply_fm_evaluation(self, tag_bundle_set):
+        """
+
+        :param tag_bundle_set:
+        :return:
+        """
         for num, category in enumerate(self.categories):
             (is_matching_category, op_result_meta_info) = category.apply(tag_bundle_set)
             if is_matching_category:
@@ -33,6 +52,11 @@ class CategoryCatalog:
         return (-1, None, []) if self.debug else (-1, None)
         
     def apply_all_evaluation(self, tag_bundle_set):
+        """
+
+        :param tag_bundle_set:
+        :return:
+        """
         categories_list = []
         for num, category in enumerate(self.categories):
             (is_matching_category, op_result_meta_info) = category.apply(tag_bundle_set)

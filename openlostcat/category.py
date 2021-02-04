@@ -2,13 +2,28 @@ from openlostcat.utils import indent, base_indent_num
 
 
 class Category:
+    """
+
+    """
+
     str_template = "Category name: {name}\nrules: [\n{rules}\n]"
         
     def __init__(self, name, rules, parser):
+        """
+
+        :param name:
+        :param rules:
+        :param parser:
+        """
         self.name = name
         self.rules = parser.parse_category(rules)
     
     def apply(self, tag_bundle_set):
+        """
+
+        :param tag_bundle_set:
+        :return:
+        """
         return self.rules.apply(tag_bundle_set)
 
     def __str__(self):

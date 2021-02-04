@@ -1,8 +1,15 @@
+"""
+quantifier ...
+"""
+
 from .abstract_bool_operator import AbstractBoolOperator
 from openlostcat.utils import indent, base_indent_num
 from openlostcat.utils import error
 
 class ALL(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "ALL(\n{operator}\n)"
             
@@ -22,6 +29,9 @@ class ALL(AbstractBoolOperator):
 
 
 class ANY(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "ANY(\n{operator}\n)"
             

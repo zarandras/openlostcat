@@ -6,20 +6,43 @@ from openlostcat.operators.abstract_filter_operator import AbstractFilterOperato
 
 
 class RefDict:
+    """
+
+    """
 
     def __init__(self, filter_ref_dict = {}, bool_ref_dict = {}):
+        """
+
+        :param filter_ref_dict:
+        :param bool_ref_dict:
+        """
         self.bool_ref_dict = bool_ref_dict
         self.filter_ref_dict = filter_ref_dict
 
     @staticmethod
     def is_ref(ref_name):
+        """
+
+        :param ref_name:
+        :return:
+        """
         return ref_name.startswith("#")
 
     @staticmethod
     def is_bool_ref(ref_name):
+        """
+
+        :param ref_name:
+        :return:
+        """
         return ref_name.startswith("##")
 
     def get_ref(self, ref_name):
+        """
+
+        :param ref_name:
+        :return:
+        """
         try:
             if self.is_bool_ref(ref_name):
                 return self.bool_ref_dict[ref_name]
@@ -31,6 +54,12 @@ class RefDict:
             error("The given reference can not be found: ", ref_name)
 
     def set_ref(self, ref_name, ref_operator):
+        """
+
+        :param ref_name:
+        :param ref_operator:
+        :return:
+        """
         if not self.is_ref(ref_name):
             error("Syntax error: invalid reference name. A reference name must start with '#': ", ref_name)
         if self.is_bool_ref(ref_name):

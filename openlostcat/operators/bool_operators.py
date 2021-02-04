@@ -2,6 +2,9 @@ from .abstract_bool_operator import AbstractBoolOperator
 from openlostcat.utils import error, indent, base_indent_num
     
 class BoolAND(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "AND(\n{operators}\n)"
     
@@ -24,6 +27,9 @@ class BoolAND(AbstractBoolOperator):
                                        base_indent_num))
   
 class BoolOR(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "OR[\n{operators}\n]"
     
@@ -46,6 +52,9 @@ class BoolOR(AbstractBoolOperator):
                                        base_indent_num))
   
 class BoolNOT(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "NOT(\n{operator}\n)"
             
@@ -61,10 +70,19 @@ class BoolNOT(AbstractBoolOperator):
     
     
 class BoolREF(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "REF {name}(\n{operator}\n)"
     
     def __init__(self, name, bool_operator, with_cache = True):
+        """
+
+        :param name:
+        :param bool_operator:
+        :param with_cache:
+        """
         self.name = name
         self.bool_operator = bool_operator
         # cache for an ongoing evaluation where key is the object reference of the tag bundle being categorized
@@ -84,10 +102,17 @@ class BoolREF(AbstractBoolOperator):
         return self.str_template.format(name= self.name, operator= indent(str(self.bool_operator), base_indent_num))
   
 class BoolConst(AbstractBoolOperator):
+    """
+
+    """
     
     str_template = "CONST({const})"
   
     def __init__(self, const_val):
+        """
+
+        :param const_val:
+        """
         if not isinstance(const_val, bool):
             error("__BOOLCONST_ key must contain a bool element", const_val)
         self.const_val = const_val
@@ -97,10 +122,12 @@ class BoolConst(AbstractBoolOperator):
     
     def __str__(self):
         return self.str_template.format(const=self.const_val)
-    
-# implication
+
 class BoolIMPL(AbstractBoolOperator):
-    
+    """
+
+    """
+
     str_template = "IMPL(\n{operators}\n)"
     
     def __init__(self, bool_operators):
