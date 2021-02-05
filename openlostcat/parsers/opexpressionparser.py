@@ -20,6 +20,13 @@ class OpExpressionParser:
         """
         self.ref_dict = ref_dict
 
+
+    def get_ref_dict(self):
+        return self.ref_dict
+
+    def set_ref_dict(self, ref_dict):
+        self.ref_dict = ref_dict
+
     @staticmethod
     def __create_multiary_operator(op_list, filter_op_class, bool_op_class):
         """
@@ -113,27 +120,11 @@ class OpExpressionParser:
         return switcher.get(type(source),
                             lambda x: error("Atomic value is not allowed here: ", x))(source)
     
-    def parse_operator(self, source):
+    def parse(self, source):
         """
 
         :param source:
         :return:
         """
         return self.__parse_standalone_operator(source)
-
-    def parse_category(self, rules):
-        """
-
-        :param rules:
-        :return:
-        """
-        if isinstance(rules, list):
-            # A category-level list is interpreted as a list of bool level rules
-            # (each item forced as a bool op instead of a filter-or)
-            return BoolOR(AbstractFilterOperator.get_as_bool_op_list([self.__parse_standalone_operator(r) for r in rules]))
-        else:
-            # Any other json element as category is interpreted as a single bool-level operator
-            # (any filter-level ops forced as bool ops by wrapping them into an ANY quantifier)
-            return AbstractFilterOperator.get_as_bool_op(self.__parse_standalone_operator(rules))
-
     

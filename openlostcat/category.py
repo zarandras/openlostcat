@@ -8,15 +8,14 @@ class Category:
 
     str_template = "Category name: {name}\nrules: [\n{rules}\n]"
         
-    def __init__(self, name, rules, parser):
+    def __init__(self, name, rules):
         """
 
         :param name:
         :param rules:
-        :param parser:
         """
         self.name = name
-        self.rules = parser.parse_category(rules)
+        self.rules = rules
     
     def apply(self, tag_bundle_set):
         """

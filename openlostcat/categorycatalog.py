@@ -1,5 +1,5 @@
 import json
-from openlostcat.parsers.rulecollectionparser import RuleCollectionParser
+from openlostcat.parsers.categorycatalogparser import CategoryCatalogParser
 from openlostcat.utils import error, indent, base_indent_num
 
 
@@ -17,7 +17,7 @@ class CategoryCatalog:
         if 'evaluationStrategy' in prop:
             self.evaluationStrategy = prop['evaluationStrategy']
 
-    def __init__(self, category_rule_collection, debug = False, parser = RuleCollectionParser()):
+    def __init__(self, category_rule_collection, debug = False, parser = CategoryCatalogParser()):
         """
 
         :param category_rule_collection:
