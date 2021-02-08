@@ -3,6 +3,7 @@ from openlostcat.category import Category
 from openlostcat.categorycatalog  import CategoryCatalog
 from openlostcat.parsers.refdict import RefDict
 from .categoryorrefdefparser import CategoryOrRefDefParser
+import json
 
 class CategoryCatalogParser:
     """
