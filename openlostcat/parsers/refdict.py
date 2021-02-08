@@ -81,7 +81,7 @@ class RefDict:
             FilterREF: self.filter_ref_dict
         }
         switcher.get(type(ref_operator),
-                     lambda x: error("Invalid reference operator: ", x))(ref_operator)[ref_operator.name] = ref_operator
+                     lambda x: error("Invalid reference operator: ", x))[ref_operator.name] = ref_operator
 
 
     # def set_ref(self, ref_operator):
