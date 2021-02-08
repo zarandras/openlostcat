@@ -67,8 +67,8 @@ class RefDict:
             return BoolREF(ref_name, AbstractFilterOperator.get_as_bool_op(operator))
         else:
             if AbstractBoolOperator.is_bool_op(operator):
-                error("Invalid reference definition. A bool expression is given but a filter expression is expected: ", ref_operator)
-            return FilterREF(ref_name, ref_operator)
+                error("Invalid reference definition. A bool expression is given but a filter expression is expected: ", operator)
+            return FilterREF(ref_name, operator)
 
     def set_ref(self, ref_operator):
         """

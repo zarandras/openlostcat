@@ -1,5 +1,3 @@
-import json
-from openlostcat.parsers.categorycatalogparser import CategoryCatalogParser
 from openlostcat.utils import error, indent, base_indent_num
 
 
@@ -13,24 +11,18 @@ class CategoryCatalog:
     
     str_template = "CategoryCatalog:\ncategory rule collection: [\n{categories}\n]"
 
-    def __update_properties(self, prop):
+    def update_properties(self, prop):
         if 'evaluationStrategy' in prop:
             self.evaluationStrategy = prop['evaluationStrategy']
 
-    def __init__(self, category_rule_collection, debug = False, parser = CategoryCatalogParser()):
+    def __init__(self, category_list, debug = False):
         """
 
-        :param category_rule_collection:
+        :param category_list:
         :param debug:
-        :param parser:
         """
         self.debug = debug
-        if isinstance(category_rule_collection, str):
-            with open(category_rule_collection) as f:
-              category_rule_collection = json.load(f)
-        self.properties = parser.get_properties(category_rule_collection)
-        self.__update_properties(self.properties)
-        self.categories = parser.parseFile(category_rule_collection)
+        self.categories = category_list
         
     def get_categories_enumerated_key_map(self):
         """

@@ -1,18 +1,19 @@
-from .categorycatalog import CategoryCatalog
 from openlostcat.utils import to_tag_bundle_set, get_tags_from_osm_elements
+from openlostcat.parsers.categorycatalogparser import CategoryCatalogParser
 
 class MainOsmCategorizer:
     """
 
     """
 
-    def __init__(self, category_rule_collection, debug = False):
-        """Provide CategoryCatalog
-
-        :param category_rule_collection: JSON structure as dictionary or file path
-        :return: CategoryCatalog
+    def __init__(self, category_action_representation, debug = False, category_catalog_parser = CategoryCatalogParser()):
         """
-        self.category_cat = CategoryCatalog(category_rule_collection, debug = debug)
+
+        :param category_action_representation: JSON structure as dictionary or file path
+        :param debug:
+        :param category_catalog_parser:
+        """
+        self.category_cat = category_catalog_parser.parse(category_action_representation, debug = debug)
 
     def categorize(self, osm_json_dict):
         """
