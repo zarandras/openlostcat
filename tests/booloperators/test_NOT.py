@@ -6,7 +6,7 @@ from openlostcat.utils import to_tag_bundle_set
 
 
 class TestNOTRules(unittest.TestCase):
-    tests = to_tag_bundle_set([
+    tests = [
         [
             {
                 "landuse" : "residential",
@@ -63,7 +63,7 @@ class TestNOTRules(unittest.TestCase):
                 "highway" : "motorway"
             }
         ]
-    ])
+    ]
 
 
     s1 = BoolNOT(ALL(None, AtomicFilter("landuse", "residential")))
