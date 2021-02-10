@@ -105,7 +105,7 @@ class BoolConst(AbstractBoolOperator):
     """
 
     """
-    
+
     str_template = "CONST({const})"
   
     def __init__(self, const_val):
@@ -118,7 +118,7 @@ class BoolConst(AbstractBoolOperator):
         self.const_val = const_val
   
     def apply(self, tag_bundle_set): 
-        return (self.const_val, [str(self), tag_bundle_set])
+        return (self.const_val, [(str(self), tag_bundle_set)])
     
     def __str__(self):
         return self.str_template.format(const=self.const_val)
