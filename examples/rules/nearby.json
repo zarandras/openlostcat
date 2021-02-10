@@ -8,7 +8,11 @@
             "water_nearby": {"waterway": "river"}
         },
         {
-            "park_nearby": {"leisure":"park"}
+            "calm_streets": {
+                "__ALL_not_road" : {
+                    "__NOT_road" : {"highway": ["primary", "secondary"]}
+                }
+             }
         }
      ]
 }

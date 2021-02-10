@@ -22,43 +22,38 @@
             "##water_nearby": {"waterway": "river"}
          },
          {
-            "##park_nearby": {"leisure":"park"}
-         },
-         {
-             "##water_AND_park": {
-                 "__REF_water": "##water_nearby",
-                 "__REF_park": "##park_nearby"
+            "##calm_streets": {
+                "__ALL_not_road" : {
+                    "__NOT_road" : {"highway": ["primary", "secondary"]}
+                }
              }
          },
          {
-             "##water_OR_park": [
+             "##water_AND_calm_streets": {
+                 "__REF_water": "##water_nearby",
+                 "__REF_park": "##calm_streets"
+             }
+         },
+         {
+             "##water_OR_calm_streets": [
                  "##water_nearby",
-                 "##park_nearby"
+                 "##calm_streets"
              ]
          },
          {
              "1st_preferred_location": {
                  "__REF_primary_pt": "##pt_primary_accessible",
-                 "__REF_water_AND_park": "##water_AND_park"
+                 "__REF_water_AND_calm_streets": "##water_OR_calm_streets"
              }
          },
          {
-             "2nd_preferred_location": [
-                 {
-                     "__REF_primary_pt": "##pt_primary_accessible",
-                     "__REF_water_OR_park": "##water_OR_park"
-                 },
-                 {
+             "2nd_preferred_location": {
                      "__REF_secondary_pt": "##pt_accessible",
-                     "__REF_water_AND_park": "##water_AND_park"
-                 }
-             ]
+                     "__REF_water_AND_calm_streets": "##water_AND_calm_streets"
+              }
          },
          {
-             "3rd_preferred_location": {
-                 "__REF_secondary_pt": "##pt_accessible",
-                 "__REF_water_OR_park": "##water_OR_park"
-             }
+             "3rd_preferred_location": ["##water_OR_calm_streets"]
          },
          {
              "not_preferred_location": true
