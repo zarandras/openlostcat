@@ -1,6 +1,6 @@
 import unittest
 from openlostcat.operators.filter_operators import AtomicFilter, FilterNOT
-from openlostcat.operators.bool_operators import BoolNOT
+from openlostcat.operators.bool_operators import BoolNOT, BoolConst
 from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.utils import to_tag_bundle_set
 
@@ -65,18 +65,24 @@ class TestNOTRules(unittest.TestCase):
         ]
     ]
 
+    boolnot_all = BoolNOT(ALL(None, AtomicFilter("landuse", "residential")))
+    any_filternot = ANY(None, FilterNOT(AtomicFilter("landuse", "residential")))
 
-    s1 = BoolNOT(ALL(None, AtomicFilter("landuse", "residential")))
-    s2 = ANY(None, FilterNOT(AtomicFilter("landuse", "residential")))
+    all_filternot = ALL(None, FilterNOT(AtomicFilter("landuse", "residential")))
+    boolnot_any = BoolNOT(ANY(None, AtomicFilter("landuse", "residential")))
 
-    s3 = ALL(None, FilterNOT(AtomicFilter("landuse", "residential")))
-    s4 = BoolNOT(ANY(None, AtomicFilter("landuse", "residential")))
-
-    def testNotRule(self):
+    def testFilterAndBoolNotConnection(self):
         for test in self.tests:
-            self.assertTrue(self.s1.apply(to_tag_bundle_set(test))[0] == self.s2.apply(to_tag_bundle_set(test))[0])
-            self.assertTrue(self.s3.apply(to_tag_bundle_set(test))[0] == self.s4.apply(to_tag_bundle_set(test))[0])
+            self.assertTrue(
+                self.boolnot_all.apply(to_tag_bundle_set(test))[0] ==
+                self.any_filternot.apply(to_tag_bundle_set(test))[0])
+            self.assertTrue(
+                self.all_filternot.apply(to_tag_bundle_set(test))[0] ==
+                self.boolnot_any.apply(to_tag_bundle_set(test))[0])
 
+    def testSimplyNot(self):
+        self.assertTrue(BoolNOT(BoolConst(False)).apply(to_tag_bundle_set([]))[0])
+        self.assertFalse(BoolNOT(BoolConst(True)).apply(to_tag_bundle_set([]))[0])
 
 if __name__ == '__main__':
     unittest.main()
