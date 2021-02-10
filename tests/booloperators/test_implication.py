@@ -7,7 +7,7 @@ from openlostcat.utils import to_tag_bundle_set
 
 
 class TestIMPL(unittest.TestCase):
-    tests = to_tag_bundle_set([
+    tests = [
         [
             {
                 "landuse" : "residential",
@@ -64,7 +64,7 @@ class TestIMPL(unittest.TestCase):
                 "highway" : "motorway"
             }
         ]
-    ])
+    ]
 
     s1 = ALL(None, AtomicFilter("landuse", "residential"))
     s2 = ALL(None, AtomicFilter("highway", ["motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential"]))
@@ -74,13 +74,13 @@ class TestIMPL(unittest.TestCase):
         impl1 = BoolIMPL([self.s2, self.s3])
         validation = [False, False, True]
         for (test, valid) in list(zip(self.tests, validation)):
-            self.assertEqual(impl1.apply(test)[0], valid)
+            self.assertEqual(impl1.apply(to_tag_bundle_set(test))[0], valid)
         
     def testWith3parameter(self):
         impl2 = BoolIMPL([self.s1, self.s2, self.s3])
         validation = [False, True, True]
         for (test, valid) in list(zip(self.tests, validation)):
-            self.assertEqual(impl2.apply(test)[0], valid)
+            self.assertEqual(impl2.apply(to_tag_bundle_set(test))[0], valid)
 
 if __name__ == '__main__':
     unittest.main()

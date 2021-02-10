@@ -74,8 +74,8 @@ class TestNOTRules(unittest.TestCase):
 
     def testNotRule(self):
         for test in self.tests:
-            self.assertTrue(self.s1.apply(test)[0] == self.s2.apply(test)[0])
-            self.assertTrue(self.s3.apply(test)[0] == self.s4.apply(test)[0])
+            self.assertTrue(self.s1.apply(to_tag_bundle_set(test))[0] == self.s2.apply(to_tag_bundle_set(test))[0])
+            self.assertTrue(self.s3.apply(to_tag_bundle_set(test))[0] == self.s4.apply(to_tag_bundle_set(test))[0])
 
 
 if __name__ == '__main__':
