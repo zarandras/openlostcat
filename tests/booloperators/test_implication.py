@@ -1,7 +1,7 @@
 import unittest
 
 from openlostcat.operators.filter_operators import AtomicFilter
-from openlostcat.operators.bool_operators import BoolIMPL, BoolOR, BoolNOT
+from openlostcat.operators.bool_operators import BoolIMPL, BoolOR, BoolNOT, BoolConst
 from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.utils import to_tag_bundle_set
 
@@ -99,7 +99,7 @@ class TestIMPL(unittest.TestCase):
 
 
     def testImplicationEquivalence(self):
-        for test_operators in test_operators_list:
+        for test_operators in self.test_operators_list:
             self.assertEqual(BoolIMPL(test_operators).apply(to_tag_bundle_set([]))[0],
                              TestIMPL.implication_as_operators(test_operators).apply(to_tag_bundle_set([]))[0])
 
