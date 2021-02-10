@@ -44,33 +44,33 @@ class TestIMPL(unittest.TestCase):
     def testWith2parameter(self):
         impl1 = FilterIMPL([self.s2, self.s3])
         self.assertTrue(
-            not impl1.apply(self.test) - [
+            not impl1.apply(self.test) - to_tag_bundle_set([
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'BAD'},
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'motorway'}
-                ]
+                ])
         )
         self.assertTrue(
-            not [
+            not to_tag_bundle_set([
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'BAD'},
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'motorway'}
-                ] - impl1.apply(self.test)
+                ]) - impl1.apply(self.test)
         )
 
     def testWith3parameter(self):
         impl2 = FilterIMPL([self.s1, self.s2, self.s3])
         self.assertTrue(
-            not impl2.apply(self.test) - [
+            not impl2.apply(self.test) - to_tag_bundle_set([
                     {'landuse': 'BAD', 'highway': 'motorway'},
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'BAD'},
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'motorway'}
-                ]
+                ])
         )
         self.assertTrue(
-            not [
+            not to_tag_bundle_set([
                     {'landuse': 'BAD', 'highway': 'motorway'},
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'BAD'},
                     {'surface': 'asphalt', 'landuse': 'residential', 'highway': 'motorway'}
-                ] - impl2.apply(self.test)
+                ]) - impl2.apply(self.test)
         )
 
 
