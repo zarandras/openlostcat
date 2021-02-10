@@ -2,10 +2,11 @@ import unittest
 from openlostcat.operators.filter_operators import AtomicFilter, FilterNOT
 from openlostcat.operators.bool_operators import BoolNOT
 from openlostcat.operators.quantifier_operators import ANY, ALL
+from openlostcat.utils import to_tag_bundle_set
 
 
 class TestNOTRules(unittest.TestCase):
-    tests = [
+    tests = to_tag_bundle_set([
         [
             {
                 "landuse" : "residential",
@@ -62,7 +63,7 @@ class TestNOTRules(unittest.TestCase):
                 "highway" : "motorway"
             }
         ]
-    ]
+    ])
 
 
     s1 = BoolNOT(ALL(None, AtomicFilter("landuse", "residential")))

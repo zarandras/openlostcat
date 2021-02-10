@@ -3,10 +3,11 @@ import unittest
 from openlostcat.operators.filter_operators import AtomicFilter
 from openlostcat.operators.bool_operators import BoolIMPL
 from openlostcat.operators.quantifier_operators import ANY, ALL
+from openlostcat.utils import to_tag_bundle_set
 
 
 class TestIMPL(unittest.TestCase):
-    tests = [
+    tests = to_tag_bundle_set([
         [
             {
                 "landuse" : "residential",
@@ -63,7 +64,7 @@ class TestIMPL(unittest.TestCase):
                 "highway" : "motorway"
             }
         ]
-    ]
+    ])
 
     s1 = ALL(None, AtomicFilter("landuse", "residential"))
     s2 = ALL(None, AtomicFilter("highway", ["motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential"]))
