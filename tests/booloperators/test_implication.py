@@ -82,7 +82,7 @@ class TestIMPL(unittest.TestCase):
         for (test, valid) in list(zip(self.tests, validation)):
             self.assertEqual(impl2.apply(to_tag_bundle_set(test))[0], valid)
 
-     test_operators_list = [
+    test_operators_list = [
         [BoolConst(False), BoolConst(True)],
         [BoolConst(True), BoolConst(False)],
         [BoolConst(True), BoolConst(True)],
