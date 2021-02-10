@@ -1,7 +1,7 @@
 import unittest
 
 from openlostcat.operators.filter_operators import AtomicFilter
-from openlostcat.operators.bool_operators import BoolIMPL
+from openlostcat.operators.bool_operators import BoolIMPL, BoolOR, BoolNOT
 from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.utils import to_tag_bundle_set
 
@@ -81,6 +81,27 @@ class TestIMPL(unittest.TestCase):
         validation = [False, True, True]
         for (test, valid) in list(zip(self.tests, validation)):
             self.assertEqual(impl2.apply(to_tag_bundle_set(test))[0], valid)
+
+     test_operators_list = [
+        [BoolConst(False), BoolConst(True)],
+        [BoolConst(True), BoolConst(False)],
+        [BoolConst(True), BoolConst(True)],
+        [BoolConst(False), BoolConst(False)],
+        [BoolConst(False), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True)],
+        [BoolConst(True), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False)],
+        [BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True)],
+        [BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False)]
+    ]
+
+    @staticmethod
+    def implication_as_operators(bool_const_operators):
+        return BoolOR([BoolNOT(op) for op in bool_const_operators[:-1]] + [bool_const_operators[-1]])
+
+
+    def testImplicationEquivalence(self):
+        for test_operators in test_operators_list:
+            self.assertEqual(BoolIMPL(test_operators).apply(to_tag_bundle_set([]))[0],
+                             TestIMPL.implication_as_operators(test_operators).apply(to_tag_bundle_set([]))[0])
 
 if __name__ == '__main__':
     unittest.main()
