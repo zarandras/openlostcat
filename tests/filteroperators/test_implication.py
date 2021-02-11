@@ -98,7 +98,7 @@ class TestImpl(unittest.TestCase):
                              apply(to_tag_bundle_set(self.test_tag_bundle_set)))
 
     def test_wrapper_quantifier_inheritance(self):
-        self.assertEqual(FilterIMPL([]).wrapper_quantifier, ALL)
+        self.assertEqual(FilterIMPL([FilterConst(False), FilterConst(True)]).wrapper_quantifier, ALL)
 
 
 if __name__ == '__main__':

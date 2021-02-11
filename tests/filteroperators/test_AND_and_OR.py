@@ -15,20 +15,20 @@ class TestAndOr(unittest.TestCase):
         [FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False)]
     ]
 
-    test_tag_bundle_set = [{"foo": "void"}]
+    test_tag_bundle_set = to_tag_bundle_set([{"foo": "void"}])
 
     def test_AND(self):
         validation = [set(), set(), self.test_tag_bundle_set, set(), set(), set(), self.test_tag_bundle_set, set()]
         for (test, valid) in list(zip(self.tests, validation)):
             self.assertEqual(
-                FilterAND(test).apply(to_tag_bundle_set(self.test_tag_bundle_set)), valid)
+                FilterAND(test).apply(self.test_tag_bundle_set), valid)
 
     def test_OR(self):
         validation = [self.test_tag_bundle_set, self.test_tag_bundle_set, self.test_tag_bundle_set, set(),
                       self.test_tag_bundle_set, self.test_tag_bundle_set, self.test_tag_bundle_set, set()]
         for (test, valid) in list(zip(self.tests, validation)):
             self.assertEqual(
-                FilterOR(test).apply(to_tag_bundle_set(self.test_tag_bundle_set)), valid)
+                FilterOR(test).apply(self.test_tag_bundle_set), valid)
 
 
 if __name__ == '__main__':

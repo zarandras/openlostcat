@@ -6,12 +6,11 @@ from openlostcat.utils import to_tag_bundle_set
 
 class TestRef(unittest.TestCase):
 
-    test_tag_bundle_set = [{"foo": "void"}]
+    test_tag_bundle_set = to_tag_bundle_set([{"foo": "void"}])
 
-    def test_simply_not(self):
-        self.assertEqual(FilterREF("#false_ref", FilterConst(False)).apply(to_tag_bundle_set(self.test_tag_bundle_set)),
-                         set())
-        self.assertEqual(FilterREF("#true_ref", FilterConst(True)).apply(to_tag_bundle_set(self.test_tag_bundle_set)),
+    def test_simply_ref(self):
+        self.assertEqual(FilterREF("#false_ref", FilterConst(False)).apply(self.test_tag_bundle_set), set())
+        self.assertEqual(FilterREF("#true_ref", FilterConst(True)).apply(self.test_tag_bundle_set),
                          self.test_tag_bundle_set)
 
     def test_wrapper_quantifier_inheritance(self):
