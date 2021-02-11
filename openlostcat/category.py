@@ -26,6 +26,4 @@ class Category:
         return self.rules.apply(tag_bundle_set)
 
     def __str__(self):
-        return self.str_template.format(name = self.name, rules= 
-                                   indent(str(self.rules), base_indent_num))
-
+        return self.str_template.format(name=self.name, rules=indent(str(self.rules), base_indent_num))

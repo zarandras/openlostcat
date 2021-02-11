@@ -1,5 +1,5 @@
 from openlostcat.utils import error
-from openlostcat.operators.filter_operators import FilterAND, FilterOR, FilterNOT, AtomicFilter, FilterIMPL
+from openlostcat.operators.filter_operators import FilterAND, FilterOR, FilterNOT, AtomicFilter, FilterIMPL, FilterConst
 from openlostcat.operators.bool_operators import BoolAND, BoolOR, BoolNOT, BoolConst, BoolIMPL
 from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.parsers.refdict import RefDict
@@ -12,14 +12,13 @@ class OpExpressionParser:
     """
 
     """
-    
-    def __init__(self, ref_dict = RefDict()):
+
+    def __init__(self, ref_dict=RefDict()):
         """
 
         :param ref_dict:
         """
         self.ref_dict = ref_dict
-
 
     def get_ref_dict(self):
         return self.ref_dict
@@ -36,30 +35,36 @@ class OpExpressionParser:
         :param bool_op_class:
         :return:
         """
-        return bool_op_class(AbstractFilterOperator.get_as_bool_op_list(op_list)) if AbstractBoolOperator.is_bool_op_list(op_list) else filter_op_class(op_list)
+        return bool_op_class(
+            AbstractFilterOperator.get_as_bool_op_list(op_list)) if AbstractBoolOperator.is_bool_op_list(
+            op_list) else filter_op_class(op_list)
 
-    op_list_len_check = lambda self, x: len(x) == 1
-    
-    def __create_or(self, l):
-        return self.__parse_standalone_operator(l[0]) if self.op_list_len_check(l) else  self.__create_multiary_operator(
-            [self.__parse_standalone_operator(e) for e in l],
-            FilterOR, BoolOR)
+    @staticmethod
+    def __op_list_len_check(op_list):
+        return len(op_list) == 1
 
-    def __create_and(self, d):
-        return self.__parse_keyvalue_operator(*next(iter(d.items()))) if self.op_list_len_check(d) else  self.__create_multiary_operator(
-            [self.__parse_keyvalue_operator(*t) for t in d.items()],
-            FilterAND, BoolAND)
-    
-    def __create_impl(self, l):
+    def __create_or(self, source_list):
+        return self.__parse_standalone_operator(source_list[0]) \
+            if OpExpressionParser.__op_list_len_check(source_list) \
+            else self.__create_multiary_operator(
+            [self.__parse_standalone_operator(e) for e in source_list], FilterOR, BoolOR)
+
+    def __create_and(self, source_dict):
+        return self.__parse_keyvalue_operator(*next(iter(source_dict.items()))) \
+            if OpExpressionParser.__op_list_len_check(source_dict) \
+            else self.__create_multiary_operator(
+            [self.__parse_keyvalue_operator(*t) for t in source_dict.items()], FilterAND, BoolAND)
+
+    def __create_impl(self, source_list):
         return self.__create_multiary_operator(
-            [self.__parse_standalone_operator(e) for e in l],
+            [self.__parse_standalone_operator(e) for e in source_list],
             FilterIMPL, BoolIMPL)
 
     def __create_not(self, source):
-        create_unary_operator = lambda op, filter_op_class, bool_op_class: bool_op_class(op) \
-            if AbstractBoolOperator.is_bool_op(op) else filter_op_class(op)
+        def create_unary_operator(op, filter_op_class, bool_op_class):
+            return bool_op_class(op) if AbstractBoolOperator.is_bool_op(op) else filter_op_class(op)
         return create_unary_operator(self.__parse_standalone_operator(source),
-                FilterNOT, BoolNOT)
+                                     FilterNOT, BoolNOT)
 
     @staticmethod
     def __get_operator_prefix(key_str):
@@ -90,20 +95,25 @@ class OpExpressionParser:
         :param v:
         :return:
         """
-        create_and_check =lambda x, create_fv, type_list, error_message : create_fv(x) \
-            if self.__check_json_type(x, type_list) \
-            else error(error_message, x)
+        def create_and_check(x, create_fv, type_list, error_message):
+            return create_fv(x) if self.__check_json_type(x, type_list) else error(error_message, x)
         switcher = {
-            "OR":   lambda x:  create_and_check(x, self.__create_or, [list], "__OR_ key must contain a list element"),
-            "AND":  lambda x:  create_and_check(x, self.__create_and, [dict], "__AND_ key must contain a dict element"),
-            "NOT":  lambda x:  create_and_check(x, self.__create_not, [list, dict], "__NOT_ must contain a list or dict elements"),
-            "REF":  lambda x:  create_and_check(x, self.ref_dict.get_ref, [str], "__REF_ must contain a string elements"),
-            "IMPL": lambda x:  create_and_check(x, self.__create_impl, [list], "__IMPL_ key must contain a list element"),
+            "OR": lambda x: create_and_check(x, self.__create_or, [list],
+                                             "__OR_ key must contain a list element"),
+            "AND": lambda x: create_and_check(x, self.__create_and, [dict],
+                                              "__AND_ key must contain a dict element"),
+            "NOT": lambda x: create_and_check(x, self.__create_not, [list, dict],
+                                              "__NOT_ must contain a list or dict elements"),
+            "REF": lambda x: create_and_check(x, self.ref_dict.get_ref, [str],
+                                              "__REF_ must contain a string elements"),
+            "IMPL": lambda x: create_and_check(x, self.__create_impl, [list],
+                                               "__IMPL_ key must contain a list element"),
             "BOOLCONST": BoolConst,
-            "ANY": lambda x:  ANY(k, self.__parse_standalone_operator(x)),
-            "ALL": lambda x:  ALL(k, self.__parse_standalone_operator(x))
+            "FilterCONST": FilterConst,
+            "ANY": lambda x: ANY(k, self.__parse_standalone_operator(x)),
+            "ALL": lambda x: ALL(k, self.__parse_standalone_operator(x))
         }
-        return switcher.get(self.__get_operator_prefix(k), lambda x:  AtomicFilter(k, x))(v)
+        return switcher.get(self.__get_operator_prefix(k), lambda x: AtomicFilter(k, x))(v)
 
     def __parse_standalone_operator(self, source):
         """For JSON items without attribute name (key)
@@ -119,7 +129,7 @@ class OpExpressionParser:
         }
         return switcher.get(type(source),
                             lambda x: error("Atomic value is not allowed here: ", x))(source)
-    
+
     def parse(self, source):
         """
 
@@ -127,4 +137,3 @@ class OpExpressionParser:
         :return:
         """
         return self.__parse_standalone_operator(source)
-    

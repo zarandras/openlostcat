@@ -10,12 +10,16 @@ class RefDict:
 
     """
 
-    def __init__(self, filter_ref_dict = {}, bool_ref_dict = {}):
+    def __init__(self, filter_ref_dict=None, bool_ref_dict=None):
         """
 
         :param filter_ref_dict:
         :param bool_ref_dict:
         """
+        if bool_ref_dict is None:
+            bool_ref_dict = {}
+        if filter_ref_dict is None:
+            filter_ref_dict = {}
         self.bool_ref_dict = bool_ref_dict
         self.filter_ref_dict = filter_ref_dict
 
@@ -67,7 +71,8 @@ class RefDict:
             return BoolREF(ref_name, AbstractFilterOperator.get_as_bool_op(operator))
         else:
             if AbstractBoolOperator.is_bool_op(operator):
-                error("Invalid reference definition. A bool expression is given but a filter expression is expected: ", operator)
+                error("Invalid reference definition. A bool expression is given but a filter expression is expected: ",
+                      operator)
             return FilterREF(ref_name, operator)
 
     def set_ref(self, ref_operator):
@@ -77,12 +82,11 @@ class RefDict:
         :return:
         """
         switcher = {
-            BoolREF:   self.bool_ref_dict,
+            BoolREF: self.bool_ref_dict,
             FilterREF: self.filter_ref_dict
         }
         switcher.get(type(ref_operator),
                      lambda x: error("Invalid reference operator: ", x))[ref_operator.name] = ref_operator
-
 
     # def set_ref(self, ref_operator):
     #     """
@@ -96,4 +100,3 @@ class RefDict:
     #     }
     #     switcher.get(type(ref_operator),
     #                  lambda x: error("Invalid reference operator: ", x))(ref_operator)
-

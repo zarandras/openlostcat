@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from openlostcat.operators.quantifier_operators import ANY
 from openlostcat.operators.abstract_bool_operator import AbstractBoolOperator
 
+
 class AbstractFilterOperator(ABC):
     """
 
@@ -32,22 +33,19 @@ class AbstractFilterOperator(ABC):
         return op.wrap_as_bool_op() if not AbstractBoolOperator.is_bool_op(op) else op
 
     @staticmethod
-    def get_as_bool_op_list(l):
+    def get_as_bool_op_list(op_list):
         """
 
-        :param l:
-        :param bool_op:
+        :param op_list:
         :return:
         """
-        return [AbstractFilterOperator.get_as_bool_op(op) for op in l]
+        return [AbstractFilterOperator.get_as_bool_op(op) for op in op_list]
   
     @abstractmethod
-    def apply(self, tag_bundle_set ):
+    def apply(self, tag_bundle_set):
         """
 
         :param tag_bundle_set:
         :return:
         """
-        return tags
-
- 
+        return tag_bundle_set

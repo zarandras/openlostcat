@@ -15,21 +15,18 @@ class TestAndOr(unittest.TestCase):
         [BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False)]
     ]
 
-    def testAnd(self):
+    def test_AND(self):
         validation = [False, False, True, False, False, False, True, False]
         for (test, valid) in list(zip(self.tests, validation)):
             self.assertEqual(
                 BoolAND(test).apply(to_tag_bundle_set([]))[0], valid)
 
-    def testOR(self):
+    def test_OR(self):
         validation = [True, True, True, False, True, True, True, False]
         for (test, valid) in list(zip(self.tests, validation)):
             self.assertEqual(
                 BoolOR(test).apply(to_tag_bundle_set([]))[0], valid)
 
 
-
 if __name__ == '__main__':
     unittest.main()
-
-

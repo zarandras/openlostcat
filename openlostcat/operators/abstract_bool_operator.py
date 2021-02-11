@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod 
 
+
 class AbstractBoolOperator(ABC):
     """
 
@@ -15,15 +16,17 @@ class AbstractBoolOperator(ABC):
         """
         return [(op_name + ":" + op_path, matching_tag_bundles)
                 for (op_path, matching_tag_bundles) in op_result_meta_info]
-    
-    def get_name(self, elemname, name):
+
+    @staticmethod
+    def get_name(unit_name, name, unique_member_variable):
         """
 
-        :param elemname:
+        :param unique_member_variable:
+        :param unit_name:
         :param name:
         :return:
         """
-        return elemname + str(hash(self.filter_operator)) if name in (None, '') or not name.strip() else name
+        return unit_name + str(hash(unique_member_variable)) if name in (None, '') or not name.strip() else name
 
     @staticmethod
     def is_bool_op(op):
@@ -35,13 +38,13 @@ class AbstractBoolOperator(ABC):
         return issubclass(type(op), AbstractBoolOperator)
 
     @staticmethod
-    def is_bool_op_list(l):
+    def is_bool_op_list(op_list):
         """
 
-        :param l:
+        :param op_list:
         :return:
         """
-        for op in l:
+        for op in op_list:
             if AbstractBoolOperator.is_bool_op(op):
                 return True
         return False

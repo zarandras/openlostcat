@@ -11,7 +11,7 @@ class CategoryOrRefDefParser:
 
     """
 
-    def __init__(self, op_exp_parser = OpExpressionParser(), ref_dict = RefDict()):
+    def __init__(self, op_exp_parser=OpExpressionParser(), ref_dict=RefDict()):
         """
 
         :param op_exp_parser:
@@ -25,7 +25,6 @@ class CategoryOrRefDefParser:
 
     def set_ref_dict(self, ref_dict):
         self.op_exp_parser.set_ref_dict(ref_dict)
-
 
     def parse(self, source):
         """
@@ -43,9 +42,6 @@ class CategoryOrRefDefParser:
             return RefDict.create_ref(kv[0], ref_operator)
         else:
             return Category(kv[0], self.parse_category_rules(kv[1]))
-
-
-
 
     def parse_category_rules(self, rules):
         """
