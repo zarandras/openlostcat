@@ -91,7 +91,7 @@ class TestImpl(unittest.TestCase):
 
     test_tag_bundle_set = [{"foo": "void"}]
 
-    def tes_iImplication_equivalence(self):
+    def test_implication_equivalence(self):
         for test_operators in self.test_operators_list:
             self.assertEqual(FilterIMPL(test_operators).apply(to_tag_bundle_set(self.test_tag_bundle_set)),
                              TestImpl.implication_as_operators(test_operators).

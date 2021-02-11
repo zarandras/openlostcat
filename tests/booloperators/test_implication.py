@@ -98,7 +98,7 @@ class TestImpl(unittest.TestCase):
     def implication_as_operators(bool_const_operators):
         return BoolOR([BoolNOT(op) for op in bool_const_operators[:-1]] + [bool_const_operators[-1]])
 
-    def tes_iImplication_equivalence(self):
+    def test_implication_equivalence(self):
         for test_operators in self.test_operators_list:
             self.assertEqual(BoolIMPL(test_operators).apply(to_tag_bundle_set([]))[0],
                              TestImpl.implication_as_operators(test_operators).apply(to_tag_bundle_set([]))[0])
