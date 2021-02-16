@@ -1,0 +1,18 @@
+{
+     "type": "CategoryRuleCollection",
+     "categoryRules":[
+         {
+            "no_wheelchair_shopping": {
+                "__IMPL_": [{"shop": "supermarket"}, {"wheelchair": [false, null]}]
+            }
+        },
+        {
+            "wheelchair_shopping_paradise": {
+                "__IMPL_": [{"shop": "supermarket"}, {"wheelchair": [true, "limited", "designated"]}]
+             }
+        },
+        {
+            "wheelchair_shopping": true
+        }
+     ]
+}
