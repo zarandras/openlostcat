@@ -63,7 +63,7 @@ class TestAtomicFilter(unittest.TestCase):
     def test_null_in_list(self):
         """Test null value functionality: makes the key optional.
         """
-        self.assertEqual(len(AtomicFilter("a", [None, "true"]).apply(self.test_set)), 2)
+        self.assertEqual(len(AtomicFilter("a", [None, True]).apply(self.test_set)), 2)
 
     def test_null_alone(self):
         """Test null value functionality: makes the key optional.
