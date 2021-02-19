@@ -65,6 +65,29 @@ class TestQuantifier(unittest.TestCase):
         ]
     ]
 
+    test_set = to_tag_bundle_set([
+        {
+            "a": "yes",
+            "c": "fail",
+            "d": "pass",
+            "e": "fail"
+        },
+        {
+            "a": "no",
+            "b": "2",
+            "d": "fail",
+            "e": "pass"
+        },
+        {
+            "c": "pass",
+            "d": "pass",
+            "e": "pass"
+        },
+        {
+            "c": "fail"
+        }
+    ])
+
     boolnot_all = BoolNOT(ALL(None, AtomicFilter("landuse", "residential")))
     any_filternot = ANY(None, FilterNOT(AtomicFilter("landuse", "residential")))
 
@@ -73,18 +96,29 @@ class TestQuantifier(unittest.TestCase):
 
     def test_filter_and_bool_Not_connection(self):
         for test in self.tests:
-            self.assertTrue(
-                self.boolnot_all.apply(to_tag_bundle_set(test))[0] ==
-                self.any_filternot.apply(to_tag_bundle_set(test))[0])
-            self.assertTrue(
-                self.all_filternot.apply(to_tag_bundle_set(test))[0] ==
-                self.boolnot_any.apply(to_tag_bundle_set(test))[0])
+            with self.subTest(test=test):
+                self.assertTrue(
+                    self.boolnot_all.apply(to_tag_bundle_set(test))[0] ==
+                    self.any_filternot.apply(to_tag_bundle_set(test))[0])
+                self.assertTrue(
+                    self.all_filternot.apply(to_tag_bundle_set(test))[0] ==
+                    self.boolnot_any.apply(to_tag_bundle_set(test))[0])
 
     def test_simply_ANY_ALL(self):
         self.assertFalse(ANY(None, FilterConst(False)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
         self.assertFalse(ALL(None, FilterConst(False)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
         self.assertTrue(ANY(None, FilterConst(True)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
         self.assertTrue(ALL(None, FilterConst(True)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
+
+    def test_complex_ANY(self):
+        self.assertTrue(ANY(None, AtomicFilter("c", "pass")).apply(self.test_set)[0])
+        self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(self.test_set)[0])
+        self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(self.test_set)[0])
+
+    def test_complex_ANY(self):
+        self.assertFalse(ALL(None, AtomicFilter("c", "pass")).apply(self.test_set)[0])
+        self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(self.test_set)[0])
+        self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(self.test_set)[0])
 
 
 if __name__ == '__main__':
