@@ -87,7 +87,7 @@ class TestAndOr(unittest.TestCase):
         validation = [ANY, ALL, ANY, ANY]
         for (test, valid) in list(zip(self.test_wrapper_quantifier_set, validation)):
             with self.subTest(test=test):
-                self.assertEqual(FilterAND(self.test_wrapper_quantifier_set).wrapper_quantifier, valid)
+                self.assertEqual(FilterAND(test).wrapper_quantifier, valid)
 
     def test_wrapper_quantifier_inheritance_OR(self):
         """Test OR wrapper quantifier return value
@@ -95,7 +95,7 @@ class TestAndOr(unittest.TestCase):
         validation = [ANY, ALL, ALL, ALL]
         for (test, valid) in list(zip(self.test_wrapper_quantifier_set, validation)):
             with self.subTest(test=test):
-                self.assertEqual(FilterOR(self.test_wrapper_quantifier_set).wrapper_quantifier, valid)
+                self.assertEqual(FilterOR(test).wrapper_quantifier, valid)
 
 
 if __name__ == '__main__':
