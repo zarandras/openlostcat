@@ -54,7 +54,7 @@ class TestAtomicFilter(unittest.TestCase):
     def test_list_value(self):
         """Test string matching
         """
-        self.assertEqual(len(AtomicFilter("c", ["fail", "wont_pass"]).apply(self.test_set)), 1)
+        self.assertEqual(len(AtomicFilter("c", ["fail", "wont_pass"]).apply(self.test_set)), 2)
 
     def test_zero_matching(self):
         """Test zero matching set case
@@ -72,12 +72,12 @@ class TestAtomicFilter(unittest.TestCase):
     def test_null_in_list(self):
         """Test null value functionality: makes the key optional.
         """
-        self.assertEqual(len(AtomicFilter("a", [None, True]).apply(self.test_set)), 2)
+        self.assertEqual(len(AtomicFilter("a", [None, True]).apply(self.test_set)), 3)
 
     def test_null_alone(self):
         """Test null value functionality: makes the key optional.
         """
-        self.assertEqual(len(AtomicFilter("a", None).apply(self.test_set)), 1)
+        self.assertEqual(len(AtomicFilter("a", None).apply(self.test_set)), 2)
 
 
 if __name__ == '__main__':
