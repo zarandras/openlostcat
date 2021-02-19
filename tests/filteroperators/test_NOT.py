@@ -37,7 +37,7 @@ class TestNot(unittest.TestCase):
         self.assertEqual(FilterNOT(FilterConst(False)).apply(self.test_tag_bundle_set), self.test_tag_bundle_set)
         self.assertFalse(FilterNOT(FilterConst(True)).apply(self.test_tag_bundle_set), set())
 
-    def test_simply_not(self):
+    def test_complex_not(self):
         """Test complex case
         """
         self.assertEqual(FilterNOT(AtomicFilter("a", [None, True])).apply(self.test_set), 1)
