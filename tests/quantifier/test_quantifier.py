@@ -115,7 +115,7 @@ class TestQuantifier(unittest.TestCase):
         self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(self.test_set)[0])
         self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(self.test_set)[0])
 
-    def test_complex_ANY(self):
+    def test_complex_ALL(self):
         self.assertFalse(ALL(None, AtomicFilter("c", "pass")).apply(self.test_set)[0])
         self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(self.test_set)[0])
         self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(self.test_set)[0])
