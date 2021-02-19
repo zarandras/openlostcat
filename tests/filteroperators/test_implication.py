@@ -93,11 +93,14 @@ class TestImpl(unittest.TestCase):
 
     def test_implication_equivalence(self):
         for test_operators in self.test_operators_list:
-            self.assertEqual(FilterIMPL(test_operators).apply(to_tag_bundle_set(self.test_tag_bundle_set)),
-                             TestImpl.implication_as_operators(test_operators).
-                             apply(to_tag_bundle_set(self.test_tag_bundle_set)))
+            with self.subTest(test_operators=test_operators):
+                self.assertEqual(FilterIMPL(test_operators).apply(to_tag_bundle_set(self.test_tag_bundle_set)),
+                                 TestImpl.implication_as_operators(test_operators).
+                                 apply(to_tag_bundle_set(self.test_tag_bundle_set)))
 
     def test_wrapper_quantifier_inheritance(self):
+        """Test wrapper quantifier return value
+        """
         self.assertEqual(FilterIMPL([FilterConst(False), FilterConst(True)]).wrapper_quantifier, ALL)
 
 

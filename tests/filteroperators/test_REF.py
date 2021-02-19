@@ -14,6 +14,8 @@ class TestRef(unittest.TestCase):
                          self.test_tag_bundle_set)
 
     def test_wrapper_quantifier_inheritance(self):
+        """Test wrapper quantifier return value
+        """
         const_with_any = FilterConst(False)
         const_with_all = FilterConst(False)
         const_with_all.wrapper_quantifier = ALL

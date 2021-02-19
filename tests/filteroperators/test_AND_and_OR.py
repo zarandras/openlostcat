@@ -1,5 +1,6 @@
 import unittest
 from openlostcat.operators.filter_operators import FilterAND, FilterOR, FilterConst, AtomicFilter
+from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.utils import to_tag_bundle_set
 
 
@@ -40,6 +41,17 @@ class TestAndOr(unittest.TestCase):
         }
     ])
 
+    const_with_any = FilterConst(False)
+    const_with_all = FilterConst(False)
+    const_with_all.wrapper_quantifier = ALL
+
+    test_wrapper_quantifier_set = [
+        [const_with_any, const_with_any, const_with_any, const_with_any],
+        [const_with_all, const_with_all, const_with_all, const_with_all],
+        [const_with_any, const_with_any, const_with_any, const_with_all],
+        [const_with_all, const_with_all, const_with_all, const_with_any]
+    ]
+
     test_tag_bundle_set = to_tag_bundle_set([{"foo": "void"}])
 
     def test_AND(self):
@@ -68,6 +80,22 @@ class TestAndOr(unittest.TestCase):
         """Test complex case.
         """
         self.assertEqual(len(FilterOR(self.test_operator_list).apply(self.test_set)), 3)
+
+    def test_wrapper_quantifier_inheritance_AND(self):
+        """Test AND wrapper quantifier return value
+        """
+        validation = [ANY, ALL, ANY, ANY]
+        for (test, valid) in list(zip(self.tests, validation)):
+            with self.subTest(test=test):
+                self.assertEqual(FilterAND(self.test_wrapper_quantifier_set).wrapper_quantifier, valid)
+
+    def test_wrapper_quantifier_inheritance_OR(self):
+        """Test OR wrapper quantifier return value
+        """
+        validation = [ANY, ALL, ALL, ALL]
+        for (test, valid) in list(zip(self.tests, validation)):
+            with self.subTest(test=test):
+                self.assertEqual(FilterAND(self.test_wrapper_quantifier_set).wrapper_quantifier, valid)
 
 
 if __name__ == '__main__':

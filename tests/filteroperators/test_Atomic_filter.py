@@ -9,14 +9,23 @@ class TestAtomicFilter(unittest.TestCase):
     test_set = to_tag_bundle_set([
         {
             "a": "yes",
-            "c": "fail"
+            "c": "fail",
+            "d": "pass",
+            "e": "fail"
         },
         {
             "a": "no",
-            "b": "2"
+            "b": "2",
+            "d": "fail",
+            "e": "pass"
         },
         {
-            "c": "pass"
+            "c": "pass",
+            "d": "pass",
+            "e": "pass"
+        },
+        {
+            "c": "fail"
         }
     ])
 
