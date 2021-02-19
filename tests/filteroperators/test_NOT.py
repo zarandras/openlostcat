@@ -40,7 +40,7 @@ class TestNot(unittest.TestCase):
     def test_complex_not(self):
         """Test complex case
         """
-        self.assertEqual(FilterNOT(AtomicFilter("a", [None, True])).apply(self.test_set), 1)
+        self.assertEqual(len(FilterNOT(AtomicFilter("a", [None, True])).apply(self.test_set)), 1)
 
     def test_wrapper_quantifier_inheritance(self):
         """Test wrapper quantifier return value
