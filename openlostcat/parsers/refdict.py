@@ -88,15 +88,3 @@ class RefDict:
         switcher.get(type(ref_operator),
                      lambda x: error("Invalid reference operator: ", x))[ref_operator.name] = ref_operator
 
-    # def set_ref(self, ref_operator):
-    #     """
-    #
-    #     :param ref_operator:
-    #     :return:
-    #     """
-    #     switcher = {
-    #         openlostcat.operators.bool_operators.BoolREF:     lambda ref: self.bool_ref_dict[ref.name]   = ref,
-    #         openlostcat.operators.filter_operators.FilterREF: lambda ref: self.filter_ref_dict[ref.name] = ref
-    #     }
-    #     switcher.get(type(ref_operator),
-    #                  lambda x: error("Invalid reference operator: ", x))(ref_operator)

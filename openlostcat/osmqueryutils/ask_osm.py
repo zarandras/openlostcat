@@ -28,7 +28,8 @@ def ask_osm(query, url=overpass_url):
     """
     result = requests.get(url, params={'data': query})
     if result.status_code != 200:
-        return np.NaN
+        # return np.NaN
+        return None
     else:
         return result.json()
 
