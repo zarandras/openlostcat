@@ -62,12 +62,12 @@ class TestAndOr(unittest.TestCase):
     def test_AND_complex(self):
         """Test complex case.
         """
-        self.assertEqual(len(FilterAND(self.test_operator_list).apply(self.test_tag_bundle_set)), 1)
+        self.assertEqual(len(FilterAND(self.test_operator_list).apply(self.test_set)), 1)
 
     def test_OR_complex(self):
         """Test complex case.
         """
-        self.assertEqual(len(FilterOR(self.test_operator_list).apply(self.test_tag_bundle_set)), 3)
+        self.assertEqual(len(FilterOR(self.test_operator_list).apply(self.test_set)), 3)
 
 
 if __name__ == '__main__':
