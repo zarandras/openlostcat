@@ -3,7 +3,6 @@ ask osm is about to...
 """
 
 import requests
-import numpy as np
 
 # overpass_url = "https://overpass.kumi.systems/api/interpreter"
 overpass_url = "http://overpass-api.de/api/interpreter"
@@ -28,7 +27,6 @@ def ask_osm(query, url=overpass_url):
     """
     result = requests.get(url, params={'data': query})
     if result.status_code != 200:
-        # return np.NaN
         return None
     else:
         return result.json()
