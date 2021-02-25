@@ -208,7 +208,7 @@ class FilterConst(AbstractFilterOperator):
         :param const_val:
         """
         if not isinstance(const_val, bool):
-            error("__FilterCONST_ key must contain a bool element", const_val)
+            error("__FILTERCONST_ key must contain a bool element", const_val)
         self.const_val = const_val
         # TODO: Const will default to ANY
         self.wrapper_quantifier = ANY

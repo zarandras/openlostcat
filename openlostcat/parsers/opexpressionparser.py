@@ -109,7 +109,7 @@ class OpExpressionParser:
             "IMPL": lambda x: create_and_check(x, self.__create_impl, [list],
                                                "__IMPL_ key must contain a list element"),
             "BOOLCONST": BoolConst,
-            "FilterCONST": FilterConst,
+            "FILTERCONST": FilterConst,
             "ANY": lambda x: ANY(k, self.__parse_standalone_operator(x)),
             "ALL": lambda x: ALL(k, self.__parse_standalone_operator(x))
         }
