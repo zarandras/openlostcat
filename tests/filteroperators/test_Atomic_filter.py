@@ -1,33 +1,10 @@
 import unittest
 from openlostcat.operators.filter_operators import AtomicFilter
 from openlostcat.operators.quantifier_operators import ANY
-from openlostcat.utils import to_tag_bundle_set
+from tests.filteroperators import test_set
 
 
 class TestAtomicFilter(unittest.TestCase):
-
-    test_set = to_tag_bundle_set([
-        {
-            "a": "yes",
-            "c": "fail",
-            "d": "pass",
-            "e": "fail"
-        },
-        {
-            "a": "no",
-            "b": "2",
-            "d": "fail",
-            "e": "pass"
-        },
-        {
-            "c": "pass",
-            "d": "pass",
-            "e": "pass"
-        },
-        {
-            "c": "fail"
-        }
-    ])
 
     def test_wrapper_quantifier_inheritance(self):
         """Test wrapper quantifier return value
@@ -39,27 +16,27 @@ class TestAtomicFilter(unittest.TestCase):
         """
         for b in [True, False]:
             with self.subTest(b=b):
-                self.assertEqual(len(AtomicFilter("a", b).apply(self.test_set)), 1)
+                self.assertEqual(len(AtomicFilter("a", b).apply(test_set)), 1)
 
     def test_int_conversion(self):
         """Test the int conversation to string feature
         """
-        self.assertEqual(len(AtomicFilter("b", 2).apply(self.test_set)), 1)
+        self.assertEqual(len(AtomicFilter("b", 2).apply(test_set)), 1)
 
     def test_exact_value(self):
         """Test string matching
         """
-        self.assertEqual(len(AtomicFilter("c", "pass").apply(self.test_set)), 1)
+        self.assertEqual(len(AtomicFilter("c", "pass").apply(test_set)), 1)
 
     def test_list_value(self):
         """Test string matching
         """
-        self.assertEqual(len(AtomicFilter("c", ["fail", "wont_pass"]).apply(self.test_set)), 2)
+        self.assertEqual(len(AtomicFilter("c", ["fail", "wont_pass"]).apply(test_set)), 2)
 
     def test_zero_matching(self):
         """Test zero matching set case
         """
-        self.assertEqual(len(AtomicFilter("wont_match", ["fail", "wont_pass"]).apply(self.test_set)), 0)
+        self.assertEqual(len(AtomicFilter("wont_match", ["fail", "wont_pass"]).apply(test_set)), 0)
 
     def test_error(self):
         """Test if exception is raised
@@ -72,12 +49,12 @@ class TestAtomicFilter(unittest.TestCase):
     def test_null_in_list(self):
         """Test null value functionality: makes the key optional.
         """
-        self.assertEqual(len(AtomicFilter("a", [None, True]).apply(self.test_set)), 3)
+        self.assertEqual(len(AtomicFilter("a", [None, True]).apply(test_set)), 3)
 
     def test_null_alone(self):
         """Test null value functionality: makes the key optional.
         """
-        self.assertEqual(len(AtomicFilter("a", None).apply(self.test_set)), 2)
+        self.assertEqual(len(AtomicFilter("a", None).apply(test_set)), 2)
 
 
 if __name__ == '__main__':

@@ -1,45 +1,14 @@
 import unittest
 from openlostcat.operators.filter_operators import FilterAND, FilterOR, FilterConst, AtomicFilter
 from openlostcat.operators.quantifier_operators import ANY, ALL
-from openlostcat.utils import to_tag_bundle_set
+from tests.filteroperators import test_set
+from tests.filteroperators import test_operators_list
+from tests.filteroperators import test_tag_bundle_set
 
 
 class TestAndOr(unittest.TestCase):
-    tests = [
-        [FilterConst(False), FilterConst(True)],
-        [FilterConst(True), FilterConst(False)],
-        [FilterConst(True), FilterConst(True)],
-        [FilterConst(False), FilterConst(False)],
-        [FilterConst(False), FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True)],
-        [FilterConst(True), FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False)],
-        [FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True)],
-        [FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False)]
-    ]
 
     test_operator_list = [AtomicFilter("d", "pass"), AtomicFilter("e", "pass")]
-
-    test_set = to_tag_bundle_set([
-        {
-            "a": "yes",
-            "c": "fail",
-            "d": "pass",
-            "e": "fail"
-        },
-        {
-            "a": "no",
-            "b": "2",
-            "d": "fail",
-            "e": "pass"
-        },
-        {
-            "c": "pass",
-            "d": "pass",
-            "e": "pass"
-        },
-        {
-            "c": "fail"
-        }
-    ])
 
     const_with_any = FilterConst(False)
     const_with_all = FilterConst(False)
@@ -52,34 +21,32 @@ class TestAndOr(unittest.TestCase):
         [const_with_all, const_with_all, const_with_all, const_with_any]
     ]
 
-    test_tag_bundle_set = to_tag_bundle_set([{"foo": "void"}])
-
     def test_AND(self):
         """Test const case
         """
-        validation = [set(), set(), self.test_tag_bundle_set, set(), set(), set(), self.test_tag_bundle_set, set()]
-        for (test, valid) in list(zip(self.tests, validation)):
+        validation = [set(), set(), test_tag_bundle_set, set(), set(), set(), test_tag_bundle_set, set()]
+        for (test, valid) in list(zip(test_operators_list, validation)):
             with self.subTest(test=test):
-                self.assertEqual(FilterAND(test).apply(self.test_tag_bundle_set), valid)
+                self.assertEqual(FilterAND(test).apply(test_tag_bundle_set), valid)
 
     def test_OR(self):
         """Test const case
         """
-        validation = [self.test_tag_bundle_set, self.test_tag_bundle_set, self.test_tag_bundle_set, set(),
-                      self.test_tag_bundle_set, self.test_tag_bundle_set, self.test_tag_bundle_set, set()]
-        for (test, valid) in list(zip(self.tests, validation)):
+        validation = [test_tag_bundle_set, test_tag_bundle_set, test_tag_bundle_set, set(),
+                      test_tag_bundle_set, test_tag_bundle_set, test_tag_bundle_set, set()]
+        for (test, valid) in list(zip(test_operators_list, validation)):
             with self.subTest(test=test):
-                self.assertEqual(FilterOR(test).apply(self.test_tag_bundle_set), valid)
+                self.assertEqual(FilterOR(test).apply(test_tag_bundle_set), valid)
 
     def test_AND_complex(self):
         """Test complex case.
         """
-        self.assertEqual(len(FilterAND(self.test_operator_list).apply(self.test_set)), 1)
+        self.assertEqual(len(FilterAND(self.test_operator_list).apply(test_set)), 1)
 
     def test_OR_complex(self):
         """Test complex case.
         """
-        self.assertEqual(len(FilterOR(self.test_operator_list).apply(self.test_set)), 3)
+        self.assertEqual(len(FilterOR(self.test_operator_list).apply(test_set)), 3)
 
     def test_wrapper_quantifier_inheritance_AND(self):
         """Test AND wrapper quantifier return value

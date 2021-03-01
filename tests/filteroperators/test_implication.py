@@ -3,6 +3,7 @@ import unittest
 from openlostcat.operators.filter_operators import AtomicFilter, FilterIMPL, FilterConst, FilterNOT, FilterOR
 from openlostcat.operators.quantifier_operators import ALL
 from openlostcat.utils import to_tag_bundle_set
+from tests.filteroperators import test_operators_list
 
 
 class TestImpl(unittest.TestCase):
@@ -74,17 +75,6 @@ class TestImpl(unittest.TestCase):
                 ]) - impl2.apply(self.test)
         )
 
-    test_operators_list = [
-        [FilterConst(False), FilterConst(True)],
-        [FilterConst(True), FilterConst(False)],
-        [FilterConst(True), FilterConst(True)],
-        [FilterConst(False), FilterConst(False)],
-        [FilterConst(False), FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True)],
-        [FilterConst(True), FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False)],
-        [FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True)],
-        [FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False), FilterConst(False)]
-    ]
-
     @staticmethod
     def implication_as_operators(bool_const_operators):
         return FilterOR([FilterNOT(op) for op in bool_const_operators[:-1]] + [bool_const_operators[-1]])
@@ -92,7 +82,7 @@ class TestImpl(unittest.TestCase):
     test_tag_bundle_set = [{"foo": "void"}]
 
     def test_implication_equivalence(self):
-        for test_operators in self.test_operators_list:
+        for test_operators in test_operators_list:
             with self.subTest(test_operators=test_operators):
                 self.assertEqual(FilterIMPL(test_operators).apply(to_tag_bundle_set(self.test_tag_bundle_set)),
                                  TestImpl.implication_as_operators(test_operators).

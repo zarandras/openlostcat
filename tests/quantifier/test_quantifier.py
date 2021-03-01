@@ -3,6 +3,7 @@ from openlostcat.operators.filter_operators import AtomicFilter, FilterNOT, Filt
 from openlostcat.operators.bool_operators import BoolNOT
 from openlostcat.operators.quantifier_operators import ANY, ALL
 from openlostcat.utils import to_tag_bundle_set
+from tests.filteroperators import test_set
 
 
 class TestQuantifier(unittest.TestCase):
@@ -65,29 +66,6 @@ class TestQuantifier(unittest.TestCase):
         ]
     ]
 
-    test_set = to_tag_bundle_set([
-        {
-            "a": "yes",
-            "c": "fail",
-            "d": "pass",
-            "e": "fail"
-        },
-        {
-            "a": "no",
-            "b": "2",
-            "d": "fail",
-            "e": "pass"
-        },
-        {
-            "c": "pass",
-            "d": "pass",
-            "e": "pass"
-        },
-        {
-            "c": "fail"
-        }
-    ])
-
     boolnot_all = BoolNOT(ALL(None, AtomicFilter("landuse", "residential")))
     any_filternot = ANY(None, FilterNOT(AtomicFilter("landuse", "residential")))
 
@@ -111,14 +89,14 @@ class TestQuantifier(unittest.TestCase):
         self.assertTrue(ALL(None, FilterConst(True)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
 
     def test_complex_ANY(self):
-        self.assertTrue(ANY(None, AtomicFilter("c", "pass")).apply(self.test_set)[0])
-        self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(self.test_set)[0])
-        self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(self.test_set)[0])
+        self.assertTrue(ANY(None, AtomicFilter("c", "pass")).apply(test_set)[0])
+        self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(test_set)[0])
+        self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(test_set)[0])
 
     def test_complex_ALL(self):
-        self.assertFalse(ALL(None, AtomicFilter("c", "pass")).apply(self.test_set)[0])
-        self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(self.test_set)[0])
-        self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(self.test_set)[0])
+        self.assertFalse(ALL(None, AtomicFilter("c", "pass")).apply(test_set)[0])
+        self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(test_set)[0])
+        self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(test_set)[0])
 
 
 if __name__ == '__main__':

@@ -1,29 +1,20 @@
 import unittest
 from openlostcat.operators.bool_operators import BoolAND, BoolOR, BoolConst
 from openlostcat.utils import to_tag_bundle_set
+from tests.booloperators import test_operators_list
 
 
 class TestAndOr(unittest.TestCase):
-    tests = [
-        [BoolConst(False), BoolConst(True)],
-        [BoolConst(True), BoolConst(False)],
-        [BoolConst(True), BoolConst(True)],
-        [BoolConst(False), BoolConst(False)],
-        [BoolConst(False), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True)],
-        [BoolConst(True), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False)],
-        [BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True)],
-        [BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False), BoolConst(False)]
-    ]
 
     def test_AND(self):
         validation = [False, False, True, False, False, False, True, False]
-        for (test, valid) in list(zip(self.tests, validation)):
+        for (test, valid) in list(zip(test_operators_list, validation)):
             self.assertEqual(
                 BoolAND(test).apply(to_tag_bundle_set([]))[0], valid)
 
     def test_OR(self):
         validation = [True, True, True, False, True, True, True, False]
-        for (test, valid) in list(zip(self.tests, validation)):
+        for (test, valid) in list(zip(test_operators_list, validation)):
             self.assertEqual(
                 BoolOR(test).apply(to_tag_bundle_set([]))[0], valid)
 

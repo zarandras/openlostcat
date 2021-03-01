@@ -1,17 +1,14 @@
 import unittest
 from openlostcat.operators.filter_operators import FilterREF, FilterConst
 from openlostcat.operators.quantifier_operators import ANY, ALL
-from openlostcat.utils import to_tag_bundle_set
+from tests.filteroperators import test_tag_bundle_set
 
 
 class TestRef(unittest.TestCase):
 
-    test_tag_bundle_set = to_tag_bundle_set([{"foo": "void"}])
-
     def test_simply_ref(self):
-        self.assertEqual(FilterREF("#false_ref", FilterConst(False)).apply(self.test_tag_bundle_set), set())
-        self.assertEqual(FilterREF("#true_ref", FilterConst(True)).apply(self.test_tag_bundle_set),
-                         self.test_tag_bundle_set)
+        self.assertEqual(FilterREF("#false_ref", FilterConst(False)).apply(test_tag_bundle_set), set())
+        self.assertEqual(FilterREF("#true_ref", FilterConst(True)).apply(test_tag_bundle_set), test_tag_bundle_set)
 
     def test_wrapper_quantifier_inheritance(self):
         """Test wrapper quantifier return value
