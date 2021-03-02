@@ -4,15 +4,15 @@ from openlostcat.operators.quantifier_operators import ANY, ALL
 
 
 class FilterAND(AbstractFilterOperator):
-    """
+    """...
 
     """
 
     str_template = "and(\n{operators}\n)"
 
     @staticmethod
-    def __get_inherits_quantifier(filter_operators):
-        """AND will wrap into ALL if each subexprs defaults to ALL otherwise will wrap into ANY
+    def __choose_wrapper_quantifier(filter_operators):
+        """AND will wrap into ALL if each subexpression defaults to ALL otherwise will wrap into ANY
 
         :param filter_operators:
         :return:
@@ -21,7 +21,7 @@ class FilterAND(AbstractFilterOperator):
 
     def __init__(self, filter_operators):
         self.filter_operators = filter_operators
-        self.wrapper_quantifier = self.__get_inherits_quantifier(filter_operators)
+        self.wrapper_quantifier = self.__choose_wrapper_quantifier(filter_operators)
 
     def apply(self, tag_bundle_set):
         matching_tag_bundles = tag_bundle_set
@@ -45,8 +45,8 @@ class FilterOR(AbstractFilterOperator):
     str_template = "or[\n{operators}\n]"
 
     @staticmethod
-    def __get_inherits_quantifier(filter_operators):
-        """OR will wrap into ALL if any subexpr defaults to ALL otherwise will wrap into ANY
+    def __choose_wrapper_quantifier(filter_operators):
+        """OR will wrap into ALL if any subexpression defaults to ALL otherwise will wrap into ANY
 
         :param filter_operators:
         :return:
@@ -55,7 +55,7 @@ class FilterOR(AbstractFilterOperator):
 
     def __init__(self, filter_operators):
         self.filter_operators = filter_operators
-        self.wrapper_quantifier = self.__get_inherits_quantifier(filter_operators)
+        self.wrapper_quantifier = self.__choose_wrapper_quantifier(filter_operators)
 
     def apply(self, tag_bundle_set):
         result = set()
@@ -83,7 +83,7 @@ class FilterNOT(AbstractFilterOperator):
 
     def __init__(self, filter_operator):
         self.filter_operator = filter_operator
-        # TODO: NOT inherits
+        # wrapper_quantifier is inherited from its subexpression
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
 
     def apply(self, tag_bundle_set):
@@ -103,7 +103,7 @@ class FilterREF(AbstractFilterOperator):
     def __init__(self, name, filter_operator):
         self.name = name
         self.filter_operator = filter_operator
-        # TODO: REF inherits
+        # wrapper_quantifier is inherited from its subexpression
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
 
     def apply(self, tag_bundle_set):
@@ -125,7 +125,7 @@ class FilterIMPL(AbstractFilterOperator):
             error("Implication must contain at least 2 elements: ", filter_operators)
         self.filter_operators = filter_operators
         self.impl_op = FilterOR([FilterNOT(op) for op in filter_operators[:-1]] + [filter_operators[-1]])
-        # TODO: IMPL will default to ALL
+        # wrapper_quantifier will default to ALL
         self.wrapper_quantifier = ALL
 
     def apply(self, tag_bundle_set):
@@ -171,17 +171,15 @@ class AtomicFilter(AbstractFilterOperator):
 
     def __init__(self, key, value):
         """
-
-        :param key:
-        :param value:
+        :param key: ...
+        :param value: ...
         """
         self.key = key
-        self.raw_value = value
-        self.values = AtomicFilter.__parse_values(self.raw_value)
+        self.values = AtomicFilter.__parse_values(value)
         self.is_optional_key = None in self.values
         if self.is_optional_key:
             self.values = set(filter(None, self.values))
-        # TODO: atomic will default to ANY
+        # wrapper_quantifier will default to ANY
         self.wrapper_quantifier = ANY
 
     def __check_condition(self, tag_bundle):

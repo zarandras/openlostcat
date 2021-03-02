@@ -2,13 +2,12 @@ from abc import ABC, abstractmethod
 
 
 class AbstractBoolOperator(ABC):
-    """
-
+    """Ancestor class for the category-level (bool) operators
     """
 
     @staticmethod
     def prefix_meta_info_paths(op_name, op_result_meta_info):
-        """
+        """Retrieves the results of the subexpressions under this operator (for debug)
 
         :param op_name:
         :param op_result_meta_info:
@@ -19,7 +18,7 @@ class AbstractBoolOperator(ABC):
 
     @staticmethod
     def get_name(unit_name, name, unique_member_variable):
-        """
+        """Generates a unique name if no operator name is given (used for quantifiers only)
 
         :param unique_member_variable:
         :param unit_name:

@@ -10,8 +10,10 @@ class TestConst(unittest.TestCase):
         """
         self.assertFalse(FilterConst(False).apply(to_tag_bundle_set([])))
         self.assertFalse(FilterConst(False).apply(to_tag_bundle_set([{"foo": "void"}])))
+        self.assertFalse(FilterConst(False).apply(to_tag_bundle_set([{"foo": "void"}, {"foo2": "void2"}])))
         self.assertFalse(FilterConst(True).apply(to_tag_bundle_set([])))
         self.assertTrue(FilterConst(True).apply(to_tag_bundle_set([{"foo": "void"}])))
+        self.assertTrue(FilterConst(True).apply(to_tag_bundle_set([{"foo": "void"}, {"foo2": "void2"}])))
 
 
 if __name__ == '__main__':

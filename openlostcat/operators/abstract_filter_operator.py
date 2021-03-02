@@ -4,8 +4,7 @@ from openlostcat.operators.abstract_bool_operator import AbstractBoolOperator
 
 
 class AbstractFilterOperator(ABC):
-    """
-
+    """Ancestor class for the set-level (filter) operators
     """
 
     wrapper_quantifier = ANY
@@ -17,7 +16,8 @@ class AbstractFilterOperator(ABC):
     """
 
     def wrap_as_bool_op(self):
-        """
+        """If a filter operator becomes a top-level operator for a category,
+        it must be wrapped into a bool operator by a quantifier - this function is called in this case
 
         :return:
         """

@@ -12,7 +12,8 @@ class TestAbstractBoolOperator(unittest.TestCase):
         """
         default_name = "name"
         self.assertEqual(default_name, AbstractBoolOperator.get_name("", default_name, []))
-        self.assertTrue(default_name, AbstractBoolOperator.get_name("", None, "some hashable type"))
+        self.assertTrue(AbstractBoolOperator.get_name("", None, "some hashable type"))
+        self.assertTrue(AbstractBoolOperator.get_name("", "", "some hashable type"))
 
     def test_is_bool_op(self):
         """Test is_bool_op functionality
