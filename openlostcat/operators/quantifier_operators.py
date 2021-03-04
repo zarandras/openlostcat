@@ -15,7 +15,7 @@ class ALL(AbstractBoolOperator):
             
     def __init__(self, name, operator):
         if self.is_bool_op(operator):
-            error("ALL is not defined for bool operators", operator)
+            error("ALL is not defined for bool operators: ", operator)
         self.filter_operator = operator
         self.name = self.get_name("__ALL_", name, self.filter_operator)
 
@@ -37,7 +37,7 @@ class ANY(AbstractBoolOperator):
             
     def __init__(self, name, operator):
         if self.is_bool_op(operator):
-            error("ANY is not defined for bool operators", operator)
+            error("ANY is not defined for bool operators: ", operator)
         self.filter_operator = operator
         self.name = self.get_name("__ANY_", name, self.filter_operator)
   

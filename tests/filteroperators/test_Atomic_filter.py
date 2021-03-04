@@ -38,6 +38,11 @@ class TestAtomicFilter(unittest.TestCase):
         """
         self.assertEqual(len(AtomicFilter("wont_match", ["fail", "wont_pass"]).apply(test_set)), 0)
 
+    def test_zero_matching_for_zero_list(self):
+        """Test zero matching set case
+        """
+        self.assertEqual(len(AtomicFilter("wont_match", []).apply(test_set)), 0)
+
     def test_error(self):
         """Test if exception is raised
         """

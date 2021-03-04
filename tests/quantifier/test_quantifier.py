@@ -72,7 +72,9 @@ class TestQuantifier(unittest.TestCase):
     all_filternot = ALL(None, FilterNOT(AtomicFilter("landuse", "residential")))
     boolnot_any = BoolNOT(ANY(None, AtomicFilter("landuse", "residential")))
 
-    def test_filter_and_bool_Not_connection(self):
+    def test_filter_and_bool_Not_identity(self):
+        """Between Filter Not and Bool Not identity.
+        """
         for test in self.tests:
             with self.subTest(test=test):
                 self.assertTrue(
@@ -83,17 +85,23 @@ class TestQuantifier(unittest.TestCase):
                     self.boolnot_any.apply(to_tag_bundle_set(test))[0])
 
     def test_simply_ANY_ALL(self):
+        """
+        """
         self.assertFalse(ANY(None, FilterConst(False)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
         self.assertFalse(ALL(None, FilterConst(False)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
         self.assertTrue(ANY(None, FilterConst(True)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
         self.assertTrue(ALL(None, FilterConst(True)).apply(to_tag_bundle_set([{"foo": "void"}]))[0])
 
     def test_complex_ANY(self):
+        """
+        """
         self.assertTrue(ANY(None, AtomicFilter("c", "pass")).apply(test_set)[0])
         self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(test_set)[0])
         self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(test_set)[0])
 
     def test_complex_ALL(self):
+        """
+        """
         self.assertFalse(ALL(None, AtomicFilter("c", "pass")).apply(test_set)[0])
         self.assertFalse(ANY(None, AtomicFilter("wont_match", ["fail", "wont_pass"])).apply(test_set)[0])
         self.assertTrue(ANY(None, AtomicFilter("wont_match", None)).apply(test_set)[0])
