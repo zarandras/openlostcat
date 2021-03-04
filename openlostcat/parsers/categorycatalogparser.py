@@ -104,6 +104,6 @@ class CategoryCatalogParser:
         if isinstance(category_action_representation, str):
             with open(category_action_representation) as f:
                 category_action_representation = json.load(f)
-        category_cat = CategoryCatalog(self.check_and_parse_category_list(category_action_representation), debug)
-        category_cat.update_properties(self.get_properties(category_action_representation))
+        category_cat = CategoryCatalog(self.check_and_parse_category_list(category_action_representation),
+                                       self.get_properties(category_action_representation), debug)
         return category_cat
