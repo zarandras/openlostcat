@@ -156,8 +156,8 @@ class AtomicFilter(AbstractFilterOperator):
             int: lambda i: str(i),
             str: lambda s: s,
             type(None): lambda x: None,
-            list: lambda x: error("JSON array is not allowed here: ", x),
-            dict: lambda x: error("JSON object is not allowed here: ", x)
+            list: lambda x: error("Array is not allowed here: ", x),
+            dict: lambda x: error("Key-value dictionary is not allowed here: ", x)
         }
         return switcher.get(type(dat),
                             lambda x: error("Unexpected element. Atomic value is not allowed here: ", x))(dat)
@@ -206,7 +206,7 @@ class FilterConst(AbstractFilterOperator):
         :param const_val:
         """
         if not isinstance(const_val, bool):
-            error("__FILTERCONST_ key must contain a bool element", const_val)
+            error("FilterConst must be initialized with a bool value.", const_val)
         self.const_val = const_val
         # TODO: Const will default to ANY
         self.wrapper_quantifier = ANY
