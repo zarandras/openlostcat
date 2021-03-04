@@ -6,6 +6,8 @@
 
 ## Operators
 
+Type of logic... - unimodal?, ~tuple calculus
+
 Filter and Bool level ...
 
 ![class diagram of operators](classdiagram_operators.png)
@@ -13,7 +15,11 @@ Filter and Bool level ...
 Quantifier wrapping ...
 
 
-## Adding new operators or filters
+### Adding new operators or filters
+
+...
+
+for quantifiers: hash table for exact / at least/most counts
 
 ...
 
