@@ -49,6 +49,16 @@ class TestRefDict(unittest.TestCase):
         self.assertEqual(len(ref_dict.bool_ref_dict), 1)
         self.assertEqual(ref_dict.get_ref("##bool_ref"), bool_ref)
 
+    def test_setter_duplicate_ref_name(self):
+        """Test if error was raised by set duplicate ref
+        """
+        bool_ref = RefDict.create_ref("##bool_ref", BoolConst(True))
+        bool_ref2 = RefDict.create_ref("##bool_ref", BoolConst(False))
+        ref_dict = RefDict()
+        ref_dict.set_ref(bool_ref)
+        with self.assertRaises(SyntaxError):
+            ref_dict.set_ref(bool_ref2)
+
 
 if __name__ == '__main__':
     unittest.main()
