@@ -79,20 +79,19 @@ class CategoryCatalogParser:
                 self.ref_dict.set_ref(cat_or_ref)
         return res
 
-    def check_and_parse_category_list(self, category_action_representation):
+    def parse_category_list(self, category_rules):
         """
 
-        :param category_action_representation:
+        :param category_rules:
         :return:
         """
-        if not self.validate(category_action_representation):
-            error("It is not a valid CategoryRuleCollection: ", category_action_representation)
-        category_rules = self.__get_category_rules(category_action_representation)
         rule_switcher = {
             list: lambda l: l,
             dict: lambda d: [d]
         }
-        return self.__get_category_list(rule_switcher.get(type(category_rules), error)(category_rules))
+        return self.__get_category_list(
+            rule_switcher.get(type(category_rules), lambda x: error("Category rules must be a  list or dict: ", x))
+            (category_rules))
 
     def parse(self, category_action_representation, debug=False):
         """Provide CategoryCatalog
@@ -104,6 +103,7 @@ class CategoryCatalogParser:
         if isinstance(category_action_representation, str):
             with open(category_action_representation) as f:
                 category_action_representation = json.load(f)
-        category_cat = CategoryCatalog(self.check_and_parse_category_list(category_action_representation),
-                                       self.get_properties(category_action_representation), debug)
-        return category_cat
+        if not self.validate(category_action_representation):
+            error("It is not a valid CategoryRuleCollection: ", category_action_representation)
+        return CategoryCatalog(self.parse_category_list(self.__get_category_rules(category_action_representation)),
+                               self.get_properties(category_action_representation), debug)
