@@ -85,6 +85,7 @@ class RefDict:
             BoolREF: self.bool_ref_dict,
             FilterREF: self.filter_ref_dict
         }
-        switcher.get(type(ref_operator),
-                     lambda x: error("Invalid reference operator: ", x))[ref_operator.name] = ref_operator
-
+        ref_dict = switcher.get(type(ref_operator), lambda x: error("Invalid reference operator: ", x))
+        if ref_operator.name in ref_dict:
+            error("Reference already exists. Duplicate reference definition: ", ref_operator.name)
+        ref_dict[ref_operator.name] = ref_operator
