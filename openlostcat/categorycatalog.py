@@ -15,13 +15,14 @@ class CategoryCatalog:
         if 'evaluationStrategy' in prop:
             self.evaluationStrategy = prop['evaluationStrategy']
 
-    def __init__(self, category_list, debug=False):
+    def __init__(self, category_list, properties={}, debug=False):
         """
 
         :param category_list:
         :param debug:
         """
         self.debug = debug
+        self.update_properties(properties)
         self.categories = category_list
 
     def get_categories_enumerated_key_map(self):
