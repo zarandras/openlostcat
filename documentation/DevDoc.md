@@ -29,7 +29,7 @@ for quantifiers: hash table for exact / at least/most counts
 
 ## Parsing
 
-<!--![information flow diagram for parsing](infflowdiagram_parse.png)-->
+![information flow diagram for parsing](infflowdiagram_parse.png)
 
 
 ## Testing
