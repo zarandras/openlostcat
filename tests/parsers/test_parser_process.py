@@ -19,8 +19,8 @@ class TestParserProcess(unittest.TestCase):
         return out.replace(" ", "").replace("\n", "")
 
     def test_simplify_operator(self):
-        """Test the simplify operator functionality:
-        If a bool AND or OR contain only 1 operator, than it will optimizes the parser and leave it out.
+        """Test the singleton operator simplification functionality:
+        If a bool AND or OR contains only 1 operator then it will be optimized (left out) by the parser
         """
         operator_json = {"__OR_": [{"__AND_": {"__OR_": [{"__AND_": {"__ANY_test": {"__FILTERCONST_": True}}}]}}]}
         op_parser = OpExpressionParser()
@@ -30,8 +30,16 @@ class TestParserProcess(unittest.TestCase):
     @patch('openlostcat.parsers.opexpressionparser.ANY.get_name')
     @patch('openlostcat.parsers.opexpressionparser.ALL.get_name')
     def test_nested_operator(self, get_name_mock_any, get_name_mock_all):
-        """Test a nested operator example with more level.
+        """Test a nested operator example with more depth levels.
+        Cases included:
+            * filter->bool conversion in multiple levels (quantifier wrapping)
+                * the last operand for the global [] is a bool const
+                    -> other elements are translated to bool ops by quantifier wrapping
+                * a bool-level operator (__ALL_) under IMPL_1 causes all operands of IMPL_1 to be wrapped as bool ops
+                * because IMPL_1 becomes a bool op, all other operands of the first AND become bool-level ops (wrapped)
+        Remark: uppercase operators are bool-level operators, lowercase operators are filter-level operators
         """
+
         get_name_mock_any.return_value = '__ANY_test'
         get_name_mock_all.return_value = '__ALL_test'
         operator_json = [
@@ -128,7 +136,7 @@ class TestParserProcess(unittest.TestCase):
                          TestParserProcess.__uniform_output(str(op_parser.parse(operator_json))))
 
     def test_parser_error(self):
-        """Test if exception is raised
+        """Test if an exception is raised on a parser error - wrong constructs / nesting of elements
         """
         op_parser = OpExpressionParser()
         wrong_jsons = [{"__OR_": {"__FILTERCONST_": True}},
@@ -150,7 +158,7 @@ class TestParserProcess(unittest.TestCase):
                     op_parser.parse(wrong_json)
 
     def test_operator_equal_creation(self):
-        """Test if some operator can be created multiple ways
+        """Test of some operators that can be created in multiple ways
         """
         op_parser = OpExpressionParser(RefDict({"#test": FilterREF("#test", FilterConst(True))},
                                                {"##test": BoolREF("#test", BoolConst(True))}))
@@ -168,7 +176,7 @@ class TestParserProcess(unittest.TestCase):
                 self.assertEqual(type(op_parser.parse(same_operator[0])), type(op_parser.parse(same_operator[1])))
 
     def test_operator_filter_bool_variation(self):
-        """Test if parser creates the appropriate operator in filter or bool version
+        """Test if the parser creates the appropriate filter or bool variant of an operator
         """
         op_parser = OpExpressionParser(RefDict({"#test": FilterREF("#test", FilterConst(True))},
                                                {"##test": BoolREF("#test", BoolConst(True))}))
@@ -188,7 +196,7 @@ class TestParserProcess(unittest.TestCase):
     @patch('openlostcat.parsers.opexpressionparser.ANY.get_name')
     @patch('openlostcat.parsers.opexpressionparser.ALL.get_name')
     def test_category_wrapper_quantifier(self, get_name_mock_any, get_name_mock_all):
-        """Test category parser. Additionally wrapper quantifier inheritance.
+        """Test the parsing of a category. Additionally tests quantifier wrapping inheritance.
         """
         get_name_mock_any.return_value = '__ANY_test'
         get_name_mock_all.return_value = '__ALL_test'
@@ -256,7 +264,7 @@ class TestParserProcess(unittest.TestCase):
     @patch('openlostcat.parsers.opexpressionparser.ANY.get_name')
     @patch('openlostcat.parsers.opexpressionparser.ALL.get_name')
     def test_ref_parser(self, get_name_mock_any, get_name_mock_all):
-        """Test reference parser
+        """Test the parsing of references
         """
         get_name_mock_any.return_value = '__ANY_test'
         get_name_mock_all.return_value = '__ALL_test'
@@ -317,7 +325,7 @@ class TestParserProcess(unittest.TestCase):
                          TestParserProcess.__uniform_output(str(ref)))
 
     def test_category_cat_error(self):
-        """Test if exception is raised
+        """Test if an exception is raised if the top-level structure of the input json is wrong (tests validation)
         """
         bad_json1 = {
             "type": "Wrong type",
@@ -350,7 +358,7 @@ class TestParserProcess(unittest.TestCase):
     @patch('openlostcat.parsers.opexpressionparser.ANY.get_name')
     @patch('openlostcat.parsers.opexpressionparser.ALL.get_name')
     def test_category_cat_parser(self, get_name_mock_any, get_name_mock_all):
-        """Test category catalog parser
+        """Test the category catalog parser (without references)
         """
         get_name_mock_any.return_value = '__ANY_test'
         get_name_mock_all.return_value = '__ALL_test'
@@ -400,7 +408,7 @@ class TestParserProcess(unittest.TestCase):
     @patch('openlostcat.parsers.opexpressionparser.ANY.get_name')
     @patch('openlostcat.parsers.opexpressionparser.ALL.get_name')
     def test_category_cat_with_ref_parser(self, get_name_mock_any, get_name_mock_all):
-        """Test category catalog parser
+        """Test category catalog parser for references
         """
         get_name_mock_any.return_value = '__ANY_test'
         get_name_mock_all.return_value = '__ALL_test'
