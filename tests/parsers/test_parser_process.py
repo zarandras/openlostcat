@@ -22,10 +22,10 @@ class TestParserProcess(unittest.TestCase):
         """Test the simplify operator functionality:
         If a bool AND or OR contain only 1 operator, than it will optimizes the parser and leave it out.
         """
-        oparator_json = {"__OR_": [{"__AND_": {"__OR_": [{"__AND_": {"__ANY_test": {"__FILTERCONST_": True}}}]}}]}
+        operator_json = {"__OR_": [{"__AND_": {"__OR_": [{"__AND_": {"__ANY_test": {"__FILTERCONST_": True}}}]}}]}
         op_parser = OpExpressionParser()
         self.assertEqual("ANY[test](const(True))",
-                         TestParserProcess.__uniform_output(str(op_parser.parse(oparator_json))))
+                         TestParserProcess.__uniform_output(str(op_parser.parse(operator_json))))
 
     @patch('openlostcat.parsers.opexpressionparser.ANY.get_name')
     @patch('openlostcat.parsers.opexpressionparser.ALL.get_name')
@@ -34,7 +34,7 @@ class TestParserProcess(unittest.TestCase):
         """
         get_name_mock_any.return_value = '__ANY_test'
         get_name_mock_all.return_value = '__ALL_test'
-        oparator_json = [
+        operator_json = [
             {
                 "__IMPL_1": [
                     {
@@ -125,7 +125,7 @@ class TestParserProcess(unittest.TestCase):
                 CONST(True) \
             ]"
         self.assertEqual(TestParserProcess.__uniform_output(operator_validation_output),
-                         TestParserProcess.__uniform_output(str(op_parser.parse(oparator_json))))
+                         TestParserProcess.__uniform_output(str(op_parser.parse(operator_json))))
 
     def test_parser_error(self):
         """Test if exception is raised
