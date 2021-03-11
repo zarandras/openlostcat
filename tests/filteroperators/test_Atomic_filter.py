@@ -12,14 +12,14 @@ class TestAtomicFilter(unittest.TestCase):
         self.assertEqual(AtomicFilter("key", "value").wrapper_quantifier, ANY)
 
     def test_bool_conversion(self):
-        """Test the Bool conversation to string feature
+        """Test Bool conversion to string feature
         """
         for b in [True, False]:
             with self.subTest(b=b):
                 self.assertEqual(len(AtomicFilter("a", b).apply(test_set)), 1)
 
     def test_int_conversion(self):
-        """Test the int conversation to string feature
+        """Test int conversion to string feature
         """
         self.assertEqual(len(AtomicFilter("b", 2).apply(test_set)), 1)
 
@@ -34,12 +34,12 @@ class TestAtomicFilter(unittest.TestCase):
         self.assertEqual(len(AtomicFilter("c", ["fail", "wont_pass"]).apply(test_set)), 2)
 
     def test_zero_matching(self):
-        """Test zero matching set case
+        """Test non-matching set case
         """
         self.assertEqual(len(AtomicFilter("wont_match", ["fail", "wont_pass"]).apply(test_set)), 0)
 
     def test_zero_matching_for_zero_list(self):
-        """Test zero matching set case
+        """Test the never-matching case
         """
         self.assertEqual(len(AtomicFilter("wont_match", []).apply(test_set)), 0)
 
@@ -52,12 +52,12 @@ class TestAtomicFilter(unittest.TestCase):
                     AtomicFilter("c", [struct, "wont_pass"])
 
     def test_null_in_list(self):
-        """Test null value functionality: makes the key optional.
+        """Test null value functionality: makes the key optional (accepts the absence of the key as a match).
         """
         self.assertEqual(len(AtomicFilter("a", [None, True]).apply(test_set)), 3)
 
     def test_null_alone(self):
-        """Test null value functionality: makes the key optional.
+        """Test null-only value functionality: makes the key absent (no value is accepted as a match).
         """
         self.assertEqual(len(AtomicFilter("a", None).apply(test_set)), 2)
 

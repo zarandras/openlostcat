@@ -6,7 +6,7 @@ from openlostcat.utils import to_tag_bundle_set
 class TestConst(unittest.TestCase):
 
     def test_simply_const(self):
-        """Test basic functionality
+        """Test the basic functionality
         """
         self.assertFalse(FilterConst(False).apply(to_tag_bundle_set([])))
         self.assertFalse(FilterConst(False).apply(to_tag_bundle_set([{"foo": "void"}])))

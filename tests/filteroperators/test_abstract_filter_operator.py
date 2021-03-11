@@ -9,7 +9,7 @@ from openlostcat.operators.abstract_filter_operator import AbstractFilterOperato
 class TestAbstractFilterOperator(unittest.TestCase):
 
     def test_wrap_as_bool_op(self):
-        """Test Bool operator conversion
+        """Test of being a Bool operator before and after conversion - particular, non-abstract cases
         """
         atomic_filter = AtomicFilter("key", "value")
         filter_impl = FilterIMPL([FilterConst(True), FilterConst(False)])
@@ -19,7 +19,7 @@ class TestAbstractFilterOperator(unittest.TestCase):
         self.assertTrue(AbstractBoolOperator.is_bool_op(filter_impl.wrap_as_bool_op()))
 
     def test_get_as_bool_op(self):
-        """Test Bool operator conversion
+        """Test of being a Bool operator before and after conversion - general, abstract cases
         """
         filter_const = FilterConst(True)
         bool_const = BoolConst(True)
@@ -29,7 +29,7 @@ class TestAbstractFilterOperator(unittest.TestCase):
         self.assertTrue(AbstractBoolOperator.is_bool_op(AbstractFilterOperator.get_as_bool_op(bool_const)))
 
     def test_get_as_bool_op_list(self):
-        """Test Bool operator list conversion
+        """Test Bool operator list conversion - converting to bool op list results in bool ops
         """
         filter_op_list = [FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True)]
         bool_op_list = [BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True)]

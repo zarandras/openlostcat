@@ -11,7 +11,7 @@ class TestRef(unittest.TestCase):
         self.assertEqual(FilterREF("#true_ref", FilterConst(True)).apply(test_tag_bundle_set), test_tag_bundle_set)
 
     def test_wrapper_quantifier_inheritance(self):
-        """Test wrapper quantifier return value
+        """Test the return value of wrapper quantifier (default quantifier for filter-level operators)
         """
         const_with_any = FilterConst(False)
         const_with_all = FilterConst(False)

@@ -16,7 +16,7 @@ class TestAbstractBoolOperator(unittest.TestCase):
         self.assertTrue(AbstractBoolOperator.get_name("", "", "some hashable type"))
 
     def test_is_bool_op(self):
-        """Test is_bool_op functionality
+        """Test is_bool_op functionality - whether an operator is a filter-level or a bool-level (quantified) one
         """
         filter_const = FilterConst(True)
         bool_const = BoolConst(True)
@@ -24,7 +24,7 @@ class TestAbstractBoolOperator(unittest.TestCase):
         self.assertTrue(AbstractBoolOperator.is_bool_op(bool_const))
 
     def test_is_bool_op_list(self):
-        """Test is_bool_op_list functionality
+        """Test is_bool_op_list functionality - if a bool-level operator appears in a list, it becomes a bool-level list
         """
         filter_op_list = [FilterConst(True), FilterConst(True), FilterConst(True), FilterConst(True)]
         bool_op_list = [BoolConst(True), BoolConst(True), BoolConst(True), BoolConst(True)]

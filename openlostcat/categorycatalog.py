@@ -2,7 +2,7 @@ from openlostcat.utils import error, indent, base_indent_num
 
 
 class CategoryCatalog:
-    """
+    """Represents a catalog of place categories, ...
 
     """
 
