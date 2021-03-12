@@ -6,15 +6,15 @@ from openlostcat.operators.abstract_filter_operator import AbstractFilterOperato
 
 
 class RefDict:
-    """
+    """Reference dictionary of named subexpressions for (re)using them in category rule expressions
 
     """
 
     def __init__(self, filter_ref_dict=None, bool_ref_dict=None):
-        """
+        """Initializer
 
-        :param filter_ref_dict:
-        :param bool_ref_dict:
+        :param filter_ref_dict: An existing set/filter-level ref_dict to be used (optional)
+        :param bool_ref_dict:   An existing bool/category-level ref_dict to be used (optional)
         """
         if bool_ref_dict is None:
             bool_ref_dict = {}
@@ -25,27 +25,27 @@ class RefDict:
 
     @staticmethod
     def is_ref(ref_name):
-        """
+        """Utility function determining whether a string is a named subexpression reference
 
-        :param ref_name:
-        :return:
+        :param ref_name: input string (name)
+        :return: bool
         """
         return ref_name.startswith("#")
 
     @staticmethod
     def is_bool_ref(ref_name):
-        """
+        """Utility function determining whether a string is a category/bool-level named subexpression reference
 
-        :param ref_name:
-        :return:
+        :param ref_name: input string (name)
+        :return: bool
         """
         return ref_name.startswith("##")
 
     def get_ref(self, ref_name):
-        """
+        """Retrieves a reference from the dictionary by its name
 
-        :param ref_name:
-        :return:
+        :param ref_name: reference name, must start with # for set/filter-level and ## for bool/category-level operators
+        :return: the operator (subexpression) stored for the name
         """
         try:
             if self.is_bool_ref(ref_name):
@@ -59,11 +59,13 @@ class RefDict:
 
     @staticmethod
     def create_ref(ref_name, operator):
-        """
+        """Creates a reference operator object
+            wraps any set/filter-level operator into a category/bool-level subexpression by a quantifier
+            if the reference type is of category/bool level (starts with ##)
 
-        :param ref_name:
-        :param operator:
-        :return:
+        :param ref_name: reference name, must start with # for set/filter-level and ## for bool/category-level operators
+        :param operator: subexpression to be named and stored
+        :return: reference operator object to be stored in a ref.dict and to be used as a subexpression
         """
         if not RefDict.is_ref(ref_name):
             error("Syntax error: invalid reference name. A reference name must start with '#': ", ref_name)
@@ -76,10 +78,9 @@ class RefDict:
             return FilterREF(ref_name, operator)
 
     def set_ref(self, ref_operator):
-        """
+        """Stores a reference operator (named subexpression) in the dictionary
 
-        :param ref_operator:
-        :return:
+        :param ref_operator: a bool/filter ref operator to be stored
         """
         switcher = {
             BoolREF: self.bool_ref_dict,

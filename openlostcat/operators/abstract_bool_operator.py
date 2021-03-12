@@ -29,19 +29,19 @@ class AbstractBoolOperator(ABC):
 
     @staticmethod
     def is_bool_op(op):
-        """
+        """Utility function determining whether an operator is of bool level
 
-        :param op:
-        :return:
+        :param op: operator
+        :return:   boolean - True: is bool op
         """
         return issubclass(type(op), AbstractBoolOperator)
 
     @staticmethod
     def is_bool_op_list(op_list):
-        """
+        """Utility function determining whether an operator list is of bool level (at least one of them)
 
-        :param op_list:
-        :return:
+        :param op_list: operator list
+        :return:        boolean - True: is bool op list
         """
         for op in op_list:
             if AbstractBoolOperator.is_bool_op(op):
@@ -50,9 +50,9 @@ class AbstractBoolOperator(ABC):
   
     @abstractmethod
     def apply(self, tag_bundle_set):
-        """
+        """Evaluates the operator (subexpression) for the given tag bundle set
 
-        :param tag_bundle_set:
-        :return:
+        :param tag_bundle_set: tag bundle set of the osm objects at/near the location
+        :return: boolean result of the operator (subexpression)
         """
         return True

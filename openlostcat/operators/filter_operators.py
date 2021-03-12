@@ -4,7 +4,7 @@ from openlostcat.operators.quantifier_operators import ANY, ALL
 
 
 class FilterAND(AbstractFilterOperator):
-    """...
+    """Set (filter)-level 'and' operator (subexpression with tag bundle set operands)
 
     """
 
@@ -12,10 +12,11 @@ class FilterAND(AbstractFilterOperator):
 
     @staticmethod
     def __choose_wrapper_quantifier(filter_operators):
-        """AND will wrap into ALL if each subexpression defaults to ALL otherwise will wrap into ANY
+        """wrapper quantifier of 'and' will default to ALL if each subexpression defaults to ALL,
+        otherwise it will default to ANY
 
-        :param filter_operators:
-        :return:
+        :param filter_operators: operands
+        :return: default wrapper quantifier ALL/ANY
         """
         return ALL if all([issubclass(op.wrapper_quantifier, ALL) for op in filter_operators]) else ANY
 
@@ -38,7 +39,7 @@ class FilterAND(AbstractFilterOperator):
 
 
 class FilterOR(AbstractFilterOperator):
-    """
+    """Set (filter)-level 'or' operator (subexpression with tag bundle set operands)
 
     """
 
@@ -46,10 +47,11 @@ class FilterOR(AbstractFilterOperator):
 
     @staticmethod
     def __choose_wrapper_quantifier(filter_operators):
-        """OR will wrap into ALL if any subexpression defaults to ALL otherwise will wrap into ANY
+        """wrapper quantifier of 'or' will default to ALL if at least one subexpression defaults to ALL,
+        otherwise it will default to ANY
 
-        :param filter_operators:
-        :return:
+        :param filter_operators: operands
+        :return: default wrapper quantifier ALL/ANY
         """
         return ALL if any([issubclass(op.wrapper_quantifier, ALL) for op in filter_operators]) else ANY
 
@@ -75,7 +77,7 @@ class FilterOR(AbstractFilterOperator):
 
 
 class FilterNOT(AbstractFilterOperator):
-    """
+    """Set (filter)-level 'not' operator (subexpression with a tag bundle set operand)
 
     """
 
@@ -83,7 +85,8 @@ class FilterNOT(AbstractFilterOperator):
 
     def __init__(self, filter_operator):
         self.filter_operator = filter_operator
-        # wrapper_quantifier is inherited from its subexpression
+
+        # wrapper quantifier is inherited from its subexpression
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
 
     def apply(self, tag_bundle_set):
@@ -94,7 +97,7 @@ class FilterNOT(AbstractFilterOperator):
 
 
 class FilterREF(AbstractFilterOperator):
-    """
+    """Set (filter)-level reference subexpression (tag bundle set type)
 
     """
 
@@ -103,7 +106,8 @@ class FilterREF(AbstractFilterOperator):
     def __init__(self, name, filter_operator):
         self.name = name
         self.filter_operator = filter_operator
-        # wrapper_quantifier is inherited from its subexpression
+
+        # wrapper quantifier is inherited from its subexpression
         self.wrapper_quantifier = filter_operator.wrapper_quantifier
 
     def apply(self, tag_bundle_set):
@@ -114,7 +118,7 @@ class FilterREF(AbstractFilterOperator):
 
 
 class FilterIMPL(AbstractFilterOperator):
-    """
+    """Set (filter)-level implication operator (subexpression with tag bundle set operands)
 
     """
 
@@ -125,7 +129,8 @@ class FilterIMPL(AbstractFilterOperator):
             error("Implication must contain at least 2 elements: ", filter_operators)
         self.filter_operators = filter_operators
         self.impl_op = FilterOR([FilterNOT(op) for op in filter_operators[:-1]] + [filter_operators[-1]])
-        # wrapper_quantifier will default to ALL
+
+        # wrapper quantifier of implication will default to ALL
         self.wrapper_quantifier = ALL
 
     def apply(self, tag_bundle_set):
@@ -138,18 +143,18 @@ class FilterIMPL(AbstractFilterOperator):
 
 
 class AtomicFilter(AbstractFilterOperator):
-    """
-
+    """Tag-based atomic filter operator
+    Accepting a key - value pair or a key - value list for matching with the tag bundle set given
     """
 
     str_template = "{{{key} : {value}}}, is_optional_key = {is_optional_key}"
 
     @staticmethod
     def __parse_single_value(dat):
-        """
+        """Gets a single value from dat
 
-        :param dat:
-        :return:
+        :param dat: value as string, bool or int (or None as null)
+        :return: value in string
         """
         switcher = {
             bool: lambda b: "yes" if b else "no",
@@ -160,7 +165,7 @@ class AtomicFilter(AbstractFilterOperator):
             dict: lambda x: error("Key-value dictionary is not allowed here: ", x)
         }
         return switcher.get(type(dat),
-                            lambda x: error("Unexpected element. Atomic value is not allowed here: ", x))(dat)
+                            lambda x: error("Unexpected element. Value type is not allowed here: ", x))(dat)
 
     @staticmethod
     def __parse_values(value):
@@ -170,16 +175,17 @@ class AtomicFilter(AbstractFilterOperator):
             return {AtomicFilter.__parse_single_value(value)}
 
     def __init__(self, key, value):
-        """
-        :param key: ...
-        :param value: ...
+        """Initializer
+        :param key: tag name string
+        :param value: tag value (various types allowed) or a value list
         """
         self.key = key
         self.values = AtomicFilter.__parse_values(value)
         self.is_optional_key = None in self.values
         if self.is_optional_key:
             self.values = set(filter(None, self.values))
-        # wrapper_quantifier will default to ANY
+
+        # wrapper quantifier of an atomic filter will default to ANY
         self.wrapper_quantifier = ANY
 
     def __check_condition(self, tag_bundle):
@@ -194,21 +200,22 @@ class AtomicFilter(AbstractFilterOperator):
 
 
 class FilterConst(AbstractFilterOperator):
-    """
-
+    """Set (filter)-level constant subexpression (tag bundle set type)
+    A filter constant True returns the operand, False returns the empty set
     """
 
     str_template = "const({const})"
 
     def __init__(self, const_val):
-        """
+        """Initializer
 
-        :param const_val:
+        :param const_val: True/False
         """
         if not isinstance(const_val, bool):
             error("FilterConst must be initialized with a bool value.", const_val)
         self.const_val = const_val
-        # TODO: Const will default to ANY
+
+        # wrapper quantifier of a const filter will default to ANY
         self.wrapper_quantifier = ANY
 
     def apply(self, tag_bundle_set):

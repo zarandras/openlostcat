@@ -7,15 +7,17 @@ from openlostcat.operators.abstract_filter_operator import AbstractFilterOperato
 
 
 class CategoryOrRefDefParser:
-    """
+    """Parser for location categories or references (named subexpressions) from JSON,
+    described by logical rules on osm tag bundle sets
 
     """
 
     def __init__(self, op_exp_parser=OpExpressionParser(), ref_dict=RefDict()):
-        """
+        """Initializer
 
-        :param op_exp_parser:
-        :param ref_dict:
+        :param op_exp_parser: Nested parser for operator (sub)expressions (optional)
+        :param ref_dict: A reference dictionary object containing any named subexpressions
+        being referred in the rules to be parsed - passed further to op_exp_parser
         """
         self.op_exp_parser = op_exp_parser
         self.op_exp_parser.set_ref_dict(ref_dict)
@@ -27,10 +29,11 @@ class CategoryOrRefDefParser:
         self.op_exp_parser.set_ref_dict(ref_dict)
 
     def parse(self, source):
-        """
+        """The main parser method to be called from outside
 
-        :param source:
-        :return:
+        :param source: a json object to be parsed, either as a category or
+            reference definition (the latter starting with #)
+        :return: category or reference definition object
         """
         if not isinstance(source, dict):
             error("A category or reference definition must contain a JSON object: ", source)
@@ -44,10 +47,13 @@ class CategoryOrRefDefParser:
             return Category(kv[0], self.parse_category_rules(kv[1]))
 
     def parse_category_rules(self, rules):
-        """
+        """Creates a category/bool-level operator (expression) object by parsing
 
-        :param rules:
-        :return:
+        :param rules: a standalone json value with rule descriptions
+        :return: category/bool-level operator (expression) object
+          Rermark: If multiple rules are given as json list, it will be parsed as an OR of category/bool-level operands
+          (if no quantifiers are explicitly used, the list elements are wrapped by separate quantifiers
+           instead of a single top-level quantifier, so they appear as separate rules joined by a top-level OR operator)
         """
         if isinstance(rules, list):
             # A category-level list is interpreted as a list of bool level rules

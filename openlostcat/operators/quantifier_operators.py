@@ -1,5 +1,6 @@
 """
-quantifier ...
+Quantifier operators bridge between set(filter)-level subexpressions and category(bool)-level subexpressions
+by quantifying the filtered result set into a single bool value.
 """
 from .abstract_bool_operator import AbstractBoolOperator
 from openlostcat.utils import indent, base_indent_num
@@ -7,7 +8,7 @@ from openlostcat.utils import error
 
 
 class ALL(AbstractBoolOperator):
-    """
+    """Universal quantifier - returns True if the filter subexpression equals to its given operand (all elements match)
 
     """
 
@@ -29,7 +30,7 @@ class ALL(AbstractBoolOperator):
 
 
 class ANY(AbstractBoolOperator):
-    """
+    """Existential quantifier - returns True if the filter subexpression is nonempty (any of the elements match)
 
     """
     

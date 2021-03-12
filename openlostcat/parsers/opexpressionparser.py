@@ -9,14 +9,15 @@ import re
 
 
 class OpExpressionParser:
-    """
+    """Parser for operator subexpressions from JSON
 
     """
 
     def __init__(self, ref_dict=RefDict()):
-        """
+        """ Initializer
 
-        :param ref_dict:
+        :param ref_dict: A reference dictionary object containing any named subexpressions
+        being referred in the rules to be parsed
         """
         self.ref_dict = ref_dict
 
@@ -28,12 +29,12 @@ class OpExpressionParser:
 
     @staticmethod
     def __create_multiary_operator(op_list, filter_op_class, bool_op_class):
-        """
+        """Creates an operator with multiple arity, its level depending on the operands
 
-        :param op_list:
-        :param filter_op_class:
-        :param bool_op_class:
-        :return:
+        :param op_list:         list of operands (subexpressions as operator objects)
+        :param filter_op_class: a set/filter-level operator class to be used if the operands are of set/filter-level
+        :param bool_op_class:   a category/bool-level operator class to be used if the operands are of that level
+        :return:                an operator object of either the given filter_op_class or bool_op_class type
         """
         return bool_op_class(
             AbstractFilterOperator.get_as_bool_op_list(op_list)) if AbstractBoolOperator.is_bool_op_list(
@@ -68,10 +69,10 @@ class OpExpressionParser:
 
     @staticmethod
     def __get_operator_prefix(key_str):
-        """
+        """Determines whether the key string is an operator name and gets its operator type prefix
 
-        :param key_str:
-        :return:
+        :param key_str: input string (JSON key)
+        :return: the operator type prefix if the input is an operator name, empty string otherwise
         """
         try:
             return re.findall("^__([^_]*)_", key_str)[0]
@@ -80,20 +81,20 @@ class OpExpressionParser:
 
     @staticmethod
     def __check_json_type(source, type_list):
-        """
+        """Determines whether a json element is any of the given types
 
-        :param source:
-        :param type_list:
-        :return:
+        :param source: data item to be determined
+        :param type_list: types to be checked and accepted
+        :return: bool as the result of the type check
         """
         return any(isinstance(source, type_candidate) for type_candidate in type_list)
 
     def __parse_keyvalue_operator(self, k, v):
-        """
+        """Creates an operator (subexpression) by parsing a JSON key-value pair
 
-        :param k:
-        :param v:
-        :return:
+        :param k: key
+        :param v: value
+        :return: operator object (used as a subexpression)
         """
         def create_and_check(x, create_fv, type_list, error_message):
             return create_fv(x) if self.__check_json_type(x, type_list) else error(error_message, x)
@@ -116,10 +117,11 @@ class OpExpressionParser:
         return switcher.get(self.__get_operator_prefix(k), lambda x: AtomicFilter(k, x))(v)
 
     def __parse_standalone_operator(self, source):
-        """For JSON items without attribute name (key)
+        """Creates an operator by parsing a standalone JSON value (without an attribute name (key))
+        (used mostly for parsing nested operands such as at quantifiers, or for parsing json list(array) items)
 
-        :param source:
-        :return:
+        :param source: value
+        :return: operator object (used as a subexpression)
         """
         switcher = {
             list: self.__create_or,
@@ -131,9 +133,9 @@ class OpExpressionParser:
                             lambda x: error("Atomic value is not allowed here: ", x))(source)
 
     def parse(self, source):
-        """
+        """The main parser method to be called from outside
 
-        :param source:
-        :return:
+        :param source: a json object to be parsed
+        :return: operator object (used as a subexpression)
         """
         return self.__parse_standalone_operator(source)

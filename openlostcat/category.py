@@ -18,7 +18,7 @@ class Category:
         self.rules = rules
     
     def apply(self, tag_bundle_set):
-        """Determines whether a location belong to this category or not
+        """Determines whether a location belongs to this category or not
 
         :param tag_bundle_set: a set of tag bundles of osm elements at the location
         :return: boolean whether the rules of this category are true for the given location

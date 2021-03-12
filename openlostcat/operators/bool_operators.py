@@ -3,7 +3,7 @@ from openlostcat.utils import error, indent, base_indent_num
 
 
 class BoolAND(AbstractBoolOperator):
-    """
+    """Category (bool)-level AND operator (subexpression with boolean operands)
 
     """
 
@@ -28,7 +28,7 @@ class BoolAND(AbstractBoolOperator):
 
 
 class BoolOR(AbstractBoolOperator):
-    """
+    """Category (bool)-level OR operator (subexpression with boolean operands)
 
     """
 
@@ -53,7 +53,7 @@ class BoolOR(AbstractBoolOperator):
 
 
 class BoolNOT(AbstractBoolOperator):
-    """
+    """Category (bool)-level NOT operator (subexpression with a boolean operand)
 
     """
 
@@ -71,7 +71,7 @@ class BoolNOT(AbstractBoolOperator):
 
 
 class BoolREF(AbstractBoolOperator):
-    """
+    """Category (bool)-level reference subexpression (boolean type)
 
     """
 
@@ -103,7 +103,7 @@ class BoolREF(AbstractBoolOperator):
 
 
 class BoolConst(AbstractBoolOperator):
-    """
+    """Category (bool)-level constant subexpression (boolean type)
 
     """
 
@@ -126,7 +126,7 @@ class BoolConst(AbstractBoolOperator):
 
 
 class BoolIMPL(AbstractBoolOperator):
-    """
+    """Category (bool)-level implication operator (subexpression with boolean operands)
 
     """
 
