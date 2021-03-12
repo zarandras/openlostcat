@@ -58,24 +58,32 @@ class CategoryCatalogParser:
             return {}
         return category_rule_collection[self.properties_key]
 
-    def __get_category_rules(self, category_action_representation):
+    def __get_category_rules(self, category_catalog):
         """Gets the categories with their rules to be parsed
 
-        :param category_action_representation: full JSON input with top-level keys and properties
-        :return: JSON with the categories and their rules to be parsed on its top-level (a single category or an array)
+        :param category_catalog: full JSON input with top-level keys and properties
+        :return: JSON with the categories and their rules to be parsed on its top-level
+        (a single category wrapped in an array)
         """
-        return category_action_representation[self.category_rules_key]
+        category_rule_collection = category_catalog[self.category_rules_key]
+        rule_switcher = {
+            list: lambda l: l,
+            dict: lambda d: [d]
+        }
+        return rule_switcher.get(type(category_rule_collection),
+                                 lambda x: error("Category rules must be a  list or dict: ", x)
+                                 )(category_rule_collection)
 
-    def __get_category_list(self, category_rules):
+    def parse_category_list(self, category_rule_collection):
         """Creates the actual category and reference definition objects and stores them
-        into a category array or ref_dict, resp., by parsing the JSON input with the given rules [nested call]
+        into a category array or ref_dict, resp., by parsing the JSON input with the given rules
 
-        :param category_rules: JSON array with the categories and their rules to be parsed
+        :param category_rule_collection: JSON array with the categories and their rules to be parsed
         :return: an array of category objects with their parsed rules as operator expressions
             Additionally, all reference (named subexpressions) definitions are stored into ref_dict
         """
         res = []
-        for source in category_rules:
+        for source in category_rule_collection:
             cat_or_ref = self.category_or_refdef_parser.parse(source)
             if isinstance(cat_or_ref, Category):
                 res.append(cat_or_ref)
@@ -83,34 +91,18 @@ class CategoryCatalogParser:
                 self.ref_dict.set_ref(cat_or_ref)
         return res
 
-    def parse_category_list(self, category_rules):
-        """Creates the actual category and reference definition objects and stores them
-        into a category array or ref_dict, resp., by parsing the JSON input with the given rules
-
-        :param category_rules: JSON with the categories and their rules to be parsed on its top-level
-                               (a single category or an array)
-        :return: an array of category objects with their parsed rules as operator expressions
-            Additionally, all reference (named subexpressions) definitions are stored into ref_dict
-        """
-        rule_switcher = {
-            list: lambda l: l,
-            dict: lambda d: [d]
-        }
-        return self.__get_category_list(
-            rule_switcher.get(type(category_rules), lambda x: error("Category rules must be a  list or dict: ", x))
-            (category_rules))
-
-    def parse(self, category_action_representation, debug=False):
+    def parse(self,  category_catalog_source, debug=False):
         """The main parser method to be called from outside
 
-        :param category_action_representation: JSON structure as a dictionary or a string as a file path
+        :param  category_catalog_source: JSON structure as a dictionary or a string as a file path
         :param debug: set to True for verbose output
         :return: a CategoryCatalog object
         """
-        if isinstance(category_action_representation, str):
-            with open(category_action_representation) as f:
-                category_action_representation = json.load(f)
-        if not self.validate(category_action_representation):
-            error("It is not a valid CategoryRuleCollection: ", category_action_representation)
-        return CategoryCatalog(self.parse_category_list(self.__get_category_rules(category_action_representation)),
-                               self.get_properties(category_action_representation), debug)
+        category_catalog = category_catalog_source
+        if isinstance(category_catalog_source, str):
+            with open(category_catalog_source) as f:
+                category_catalog = json.load(f)
+        if not self.validate(category_catalog):
+            error("It is not a valid CategoryRuleCollection: ", category_catalog)
+        return CategoryCatalog(self.parse_category_list(self.__get_category_rules(category_catalog)),
+                               self.get_properties(category_catalog), debug)
