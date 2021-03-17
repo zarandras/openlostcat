@@ -1,0 +1,18 @@
+{
+     "type": "CategoryRuleCollection",
+     "properties": {
+         "evaluationStrategy": "all"
+     },
+     "categoryRules":[
+        {
+            "water_nearby": {"waterway": "river"}
+        },
+        {
+            "calm_streets": {
+                "__ALL_not_road" : {
+                    "__NOT_road" : {"highway": ["primary", "secondary"]}
+                }
+             }
+        }
+     ]
+}

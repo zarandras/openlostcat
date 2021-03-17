@@ -1,24 +1,37 @@
-from .categorycatalog import CategoryCatalog
+from openlostcat.utils import to_tag_bundle_set, get_tags_from_osm_elements
+from openlostcat.parsers.categorycatalogparser import CategoryCatalogParser
+
 
 class MainOsmCategorizer:
+    """The main entry point for OpenLostCat:
+    sets up a category catalog and categorizes locations by their tag bundle sets
 
-        def __init__(self, category_rule_collection, debug = False):
-            """
-            Provide CategoryCatalog
-            :param category_rule_collection: JSON structure as dictionary or file path
-            :return: CategoryCatalog
-            """
-            self.category_cat = CategoryCatalog(category_rule_collection, debug = debug)
+    """
 
-        def categorize(self, osm_json_dict):
-            tag_bundle_set = [elements['tags'] for elements in osm_json_dict['elements'] if 'tags' in elements]
-            return self.category_cat.apply(tag_bundle_set)
-        
-        def get_categories_enumerated_key_map(self):
-            return self.category_cat.get_categories_enumerated_key_map()
+    def __init__(self, category_action_representation, debug=False, category_catalog_parser=CategoryCatalogParser()):
+        """Initializes the categorizer by setting up the category catalog
 
+        :param category_action_representation: JSON structure as dictionary or file path
+        :param debug: Boolean, set to true for more detailed output
+        :param category_catalog_parser: parse using the given parser
+        """
+        self.category_cat = category_catalog_parser.parse(category_action_representation, debug=debug)
 
+    def categorize(self, osm_json_dict):
+        """Categorizes a location by the osm tag bundle set of the objects located there/nearby
 
+        :param osm_json_dict: tag bundle set of the osm objects at/near the location
+        :return: categories matching the location by the given strategy
+        """
+        tag_bundle_set = to_tag_bundle_set(get_tags_from_osm_elements(osm_json_dict))
+        return self.category_cat.apply(tag_bundle_set)
 
+    def get_categories_enumerated_key_map(self):
+        """Retrieves the categories parsed by __init__
 
+        :return: categories
+        """
+        return self.category_cat.get_categories_enumerated_key_map()
 
+    def __str__(self):
+        return str(self.category_cat)

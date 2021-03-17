@@ -20,6 +20,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.6',
+    install_requires=['immutabledict > 1.0.0', 'requests'],
     test_suite="tests",
 )
